@@ -24,7 +24,6 @@ jobs:
           node-version: 20
 
       - name: Generate environment files
-        working-directory: pizza-project
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
