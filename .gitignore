@@ -11,6 +11,10 @@ dist/
 .env
 .env.*
 
+# Generated environment files (use npm run env:generate)
+src/environments/environment.ts
+src/environments/environment.prod.ts
+
 # OS
 .DS_Store
 Thumbs.db

@@ -3,13 +3,14 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "build:prod": "ng build --configuration production",
+    "start": "npm run env:generate && ng serve",
+    "build": "npm run env:generate && ng build",
+    "build:prod": "npm run env:generate && ng build --configuration production",
+    "env:generate": "node scripts/generate-env.mjs",
     "watch": "ng build --watch --configuration development",
     "seed": "npx ts-node --project scripts/tsconfig.scripts.json scripts/seed.ts",
     "docker:build": "docker build -t pizzeria-platform .",
-    "docker:up": "docker compose up --build",
+    "docker:up": "docker compose up -d --build",
     "docker:down": "docker compose down"
   },
   "private": true,
