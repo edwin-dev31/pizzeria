@@ -32,35 +32,48 @@
 <!-- ── Branch cards ───────────────────────────────────────────────────────── -->
 <section class="bs-branches" aria-label="Sucursales disponibles">
   <div class="bs-branches__grid">
-    @for (branch of branches(); track branch.id; let i = $index) {
-      <article
-        class="bs-card"
-        [style.animation-delay]="(i * 0.12) + 's'"
-        (click)="selectBranch(branch)"
-        (keydown.enter)="selectBranch(branch)"
-        (keydown.space)="selectBranch(branch)"
-        role="button"
-        tabindex="0"
-        [attr.aria-label]="'Ver menú de ' + branch.display_name"
-      >
-        <div class="bs-card__image-wrap">
-          <img
-            class="bs-card__image"
-            [src]="branch.cover_image_url || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&q=80'"
-            [alt]="branch.display_name"
-          />
+    @if (loading()) {
+      @for (item of skeletonItems; track item) {
+        <div class="bs-card bs-card--skeleton" aria-hidden="true">
+          <div class="bs-card__image-wrap bs-skeleton"></div>
+          <div class="bs-card__body">
+            <div class="bs-skeleton bs-skeleton--title"></div>
+            <div class="bs-skeleton bs-skeleton--line"></div>
+            <div class="bs-skeleton bs-skeleton--line bs-skeleton--short"></div>
+          </div>
         </div>
+      }
+    } @else {
+      @for (branch of branches(); track branch.id; let i = $index) {
+        <article
+          class="bs-card"
+          [style.animation-delay]="(i * 0.12) + 's'"
+          (click)="selectBranch(branch)"
+          (keydown.enter)="selectBranch(branch)"
+          (keydown.space)="selectBranch(branch)"
+          role="button"
+          tabindex="0"
+          [attr.aria-label]="'Ver menú de ' + branch.display_name"
+        >
+          <div class="bs-card__image-wrap">
+            <img
+              class="bs-card__image"
+              [src]="branch.cover_image_url || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&q=80'"
+              [alt]="branch.display_name"
+            />
+          </div>
 
-        <div class="bs-card__body">
-          <h2 class="bs-card__name">{{ branch.display_name }}</h2>
-          @if (branch.address) {
-            <p class="bs-card__address">{{ branch.address }}</p>
-          }
-          @if (branch.description) {
-            <p class="bs-card__description">{{ branch.description }}</p>
-          }
-        </div>
-      </article>
+          <div class="bs-card__body">
+            <h2 class="bs-card__name">{{ branch.display_name }}</h2>
+            @if (branch.address) {
+              <p class="bs-card__address">{{ branch.address }}</p>
+            }
+            @if (branch.description) {
+              <p class="bs-card__description">{{ branch.description }}</p>
+            }
+          </div>
+        </article>
+      }
     }
   </div>
 </section>

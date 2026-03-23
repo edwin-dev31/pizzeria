@@ -1,6 +1,6 @@
 import { Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, MessageCircle } from 'lucide-angular';
+import { LucideAngularModule, MessageCircle, LUCIDE_ICONS, LucideIconProvider } from 'lucide-angular';
 import { CartService } from '../../core/services/cart.service';
 import { BranchService } from '../../core/services/branch.service';
 import { NotificationService } from '../../core/services/notification.service';
@@ -10,6 +10,7 @@ import { CurrencyFormatPipe } from '../../shared/pipes/currency-format.pipe';
   selector: 'app-cart-drawer',
   standalone: true,
   imports: [CommonModule, CurrencyFormatPipe, LucideAngularModule],
+  providers: [{ provide: LUCIDE_ICONS, useValue: new LucideIconProvider({ MessageCircle }) }],
   templateUrl: './cart-drawer.component.html',
   styleUrls: ['./cart-drawer.component.scss'],
 })

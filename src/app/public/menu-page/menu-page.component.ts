@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, HostListener, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { LucideAngularModule, MapPin, ShoppingCart, ChevronDown, ChevronRight } from 'lucide-angular';
+import { LucideAngularModule, MapPin, ShoppingCart, ChevronDown, ChevronRight, LUCIDE_ICONS, LucideIconProvider } from 'lucide-angular';
 import { BranchService } from '../../core/services/branch.service';
 import { MenuService } from '../../core/services/menu.service';
 import { ThemeService } from '../../core/services/theme.service';
@@ -16,6 +16,7 @@ import { Branch } from '../../core/models/branch.model';
   selector: 'app-menu-page',
   standalone: true,
   imports: [MenuSectionComponent, CartDrawerComponent, ProductDetailModalComponent, RouterLink, LucideAngularModule],
+  providers: [{ provide: LUCIDE_ICONS, useValue: new LucideIconProvider({ MapPin, ShoppingCart, ChevronDown, ChevronRight }) }],
   templateUrl: './menu-page.component.html',
   styleUrls: ['./menu-page.component.scss'],
 })
