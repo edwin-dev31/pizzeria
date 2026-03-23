@@ -4,8 +4,9 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
-# Generate prod environment file (uses __PLACEHOLDER__ syntax for runtime replacement)
-RUN node scripts/generate-env.mjs
+# If environment files were pre-generated (CI), use them as-is.
+# Otherwise generate them now (local docker build with .env present).
+RUN if [ ! -f src/environments/environment.ts ]; then node scripts/generate-env.mjs; fi
 RUN npm run build -- --configuration production
 
 # Stage 2: Serve
