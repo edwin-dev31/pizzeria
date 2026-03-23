@@ -1,20 +1,28 @@
 @if (hasAvailableProducts()) {
-  <section class="menu-section" [attr.aria-labelledby]="'section-' + section().id">
+  <section
+    class="menu-section"
+    [id]="'section-' + section().id"
+    [attr.aria-labelledby]="'section-heading-' + section().id"
+  >
     <header class="menu-section__header">
-      <h2
-        class="menu-section__title"
-        [id]="'section-' + section().id"
-      >
-        {{ section().name }}
-      </h2>
-      <span class="menu-section__count">
-        {{ availableProducts().length }} {{ availableProducts().length === 1 ? 'producto' : 'productos' }}
-      </span>
+      <div class="menu-section__header-left">
+        <h2 class="menu-section__title" [id]="'section-heading-' + section().id">
+          {{ section().name }}
+        </h2>
+        <span class="menu-section__count">
+          {{ availableProducts().length }}
+          {{ availableProducts().length === 1 ? 'producto' : 'productos' }}
+        </span>
+      </div>
     </header>
 
     <div class="menu-section__grid">
-      @for (product of availableProducts(); track product.id) {
-        <app-product-card [product]="product" />
+      @for (product of availableProducts(); track product.id; let i = $index) {
+        <app-product-card
+          [product]="product"
+          [style.animation-delay]="(i * 0.05) + 's'"
+          (productSelected)="productSelected.emit($event)"
+        />
       }
     </div>
   </section>

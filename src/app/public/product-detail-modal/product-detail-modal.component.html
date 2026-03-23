@@ -1,0 +1,75 @@
+<div
+  class="pdm-backdrop"
+  role="dialog"
+  aria-modal="true"
+  [attr.aria-label]="product().name"
+  (click)="onBackdropClick($event)"
+  (keydown.escape)="close()"
+  tabindex="-1"
+>
+  <div class="pdm-sheet">
+
+    <!-- ── Drag handle (mobile) ── -->
+    <div class="pdm-handle" aria-hidden="true"></div>
+
+    <!-- ── Hero image ── -->
+    <div class="pdm-hero">
+      @if ((product().images ?? []).length > 0) {
+        <app-image-carousel [images]="product().images ?? []" />
+      } @else {
+        <div class="pdm-hero__placeholder" aria-hidden="true">🍕</div>
+      }
+      <!-- gradient so title reads over image -->
+      <div class="pdm-hero__scrim" aria-hidden="true"></div>
+
+      <!-- close -->
+      <button class="pdm-close" type="button" aria-label="Cerrar" (click)="close()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+
+      <!-- price chip over image -->
+      <div class="pdm-hero__price-chip">
+        {{ product().price | currencyFormat: currencySymbol }}
+      </div>
+    </div>
+
+    <!-- ── Body ── -->
+    <div class="pdm-body">
+      <h2 class="pdm-body__title">{{ product().name }}</h2>
+
+      @if (product().description) {
+        <p class="pdm-body__desc">{{ product().description }}</p>
+      }
+
+      <!-- ── Actions ── -->
+      <div class="pdm-actions">
+        @if (quantity() > 0) {
+          <div class="pdm-qty" role="group" aria-label="Cantidad">
+            <button class="pdm-qty__btn" type="button" aria-label="Quitar uno" (click)="removeFromCart()">
+              <svg width="14" height="2" viewBox="0 0 14 2" fill="none" aria-hidden="true">
+                <path d="M1 1h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
+            <span class="pdm-qty__num">{{ quantity() }}</span>
+            <button class="pdm-qty__btn" type="button" aria-label="Agregar uno" (click)="addToCart()">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
+        }
+
+        <button class="pdm-cta" type="button" (click)="addToCart()">
+          <svg class="pdm-cta__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M3 6h18M16 10a4 4 0 01-8 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          {{ quantity() > 0 ? 'Agregar otro' : 'Agregar al carrito' }}
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -1,6 +1,6 @@
 <main class="menu-page" role="main">
 
-  <!-- Sticky glassmorphism header -->
+  <!-- ── Sticky header ──────────────────────────────────────────────────── -->
   <header class="menu-page__header">
     <div class="menu-page__header-inner">
       @if (activeBranch(); as branch) {
@@ -23,9 +23,27 @@
         </button>
       </div>
     </div>
+
+    <!-- ── Section nav pills ──────────────────────────────────────────── -->
+    @if (sections().length > 0) {
+      <nav class="menu-page__section-nav" aria-label="Ir a sección">
+        <div class="menu-page__section-nav-track">
+          @for (section of sections(); track section.id) {
+            <button
+              class="menu-page__section-pill"
+              [class.menu-page__section-pill--active]="activeSectionId() === section.id"
+              type="button"
+              (click)="scrollToSection(section)"
+            >
+              {{ section.name }}
+            </button>
+          }
+        </div>
+      </nav>
+    }
   </header>
 
-  <!-- Content -->
+  <!-- ── Content ────────────────────────────────────────────────────────── -->
   <div class="menu-page__content">
     @if (sections().length === 0) {
       <div class="menu-page__loading" role="status" aria-live="polite">
@@ -41,11 +59,21 @@
     } @else {
       <div class="menu-page__sections">
         @for (section of sections(); track section.id) {
-          <app-menu-section [section]="section" />
+          <app-menu-section
+            [section]="section"
+            (productSelected)="openProduct($event)"
+          />
         }
       </div>
     }
   </div>
 
   <app-cart-drawer [externalOpen]="cartOpen()" (drawerClosed)="cartOpen.set(false)" />
+
+  @if (selectedProduct(); as product) {
+    <app-product-detail-modal
+      [product]="product"
+      (closed)="closeProduct()"
+    />
+  }
 </main>

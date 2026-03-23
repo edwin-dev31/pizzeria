@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { MenuSection } from '../../core/models/menu-section.model';
 import { Product } from '../../core/models/product.model';
 import { ProductCardComponent } from '../product-card/product-card.component';
@@ -12,6 +12,7 @@ import { ProductCardComponent } from '../product-card/product-card.component';
 })
 export class MenuSectionComponent {
   readonly section = input.required<MenuSection>();
+  readonly productSelected = output<Product>();
 
   readonly availableProducts = computed<Product[]>(() =>
     (this.section().products ?? []).filter((p) => p.is_available)

@@ -2,24 +2,26 @@ import { Component, computed, inject, input, output } from '@angular/core';
 import { Product } from '../../core/models/product.model';
 import { CartService } from '../../core/services/cart.service';
 import { BranchService } from '../../core/services/branch.service';
+import { NotificationService } from '../../core/services/notification.service';
 import { CurrencyFormatPipe } from '../../shared/pipes/currency-format.pipe';
 import { ImageCarouselComponent } from '../../shared/components/image-carousel/image-carousel.component';
 
 @Component({
-  selector: 'app-product-card',
+  selector: 'app-product-detail-modal',
   standalone: true,
   imports: [CurrencyFormatPipe, ImageCarouselComponent],
-  templateUrl: './product-card.component.html',
-  styleUrl: './product-card.component.scss',
+  templateUrl: './product-detail-modal.component.html',
+  styleUrl: './product-detail-modal.component.scss',
 })
-export class ProductCardComponent {
+export class ProductDetailModalComponent {
   readonly product = input.required<Product>();
-  readonly productSelected = output<Product>();
+  readonly closed = output<void>();
 
   private readonly cartService = inject(CartService);
   private readonly branchService = inject(BranchService);
+  private readonly notificationService = inject(NotificationService);
 
-  readonly cartQuantity = computed(() => {
+  readonly quantity = computed(() => {
     const item = this.cartService.items().find(i => i.product.id === this.product().id);
     return item?.quantity ?? 0;
   });
@@ -28,7 +30,22 @@ export class ProductCardComponent {
     return this.branchService.activeBranch()?.currency_symbol ?? '$';
   }
 
-  select(): void {
-    this.productSelected.emit(this.product());
+  close(): void {
+    this.closed.emit();
+  }
+
+  onBackdropClick(event: MouseEvent): void {
+    if ((event.target as HTMLElement).classList.contains('pdm-backdrop')) {
+      this.close();
+    }
+  }
+
+  addToCart(): void {
+    this.cartService.addItem(this.product());
+    this.notificationService.show(`${this.product().name} agregado al carrito`, 'success');
+  }
+
+  removeFromCart(): void {
+    this.cartService.removeItem(this.product().id);
   }
 }

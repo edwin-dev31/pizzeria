@@ -35,6 +35,7 @@ interface BranchSeed {
 
 interface ProductSeed {
   nombre: string;
+  imagen?: string;
   descripcion?: string;
   precio?: number;
 }
@@ -133,7 +134,7 @@ async function seed(): Promise<void> {
 
       console.log(`  ↳ ${sectionMeta.name}: ${items.length} productos`);
 
-      const { error: productError } = await supabase.from('products').insert(
+      const { data: insertedProducts, error: productError } = await supabase.from('products').insert(
         items.map((p, idx) => ({
           section_id: section.id,
           branch_id: branch.id,
@@ -143,8 +144,19 @@ async function seed(): Promise<void> {
           is_available: true,
           display_order: idx,
         }))
-      );
+      ).select('id, name');
       if (productError) throw productError;
+
+      // Insert product images
+      const imageRows = (insertedProducts as Array<{ id: string; name: string }>).flatMap((prod) => {
+        const src = items.find(p => p.nombre === prod.name);
+        if (!src?.imagen) return [];
+        return [{ product_id: prod.id, url: src.imagen, display_order: 0 }];
+      });
+      if (imageRows.length > 0) {
+        const { error: imgError } = await supabase.from('product_images').insert(imageRows);
+        if (imgError) throw imgError;
+      }
     }
   }
 }
