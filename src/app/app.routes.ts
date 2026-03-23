@@ -2,9 +2,9 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/branch-select', pathMatch: 'full' },
+  { path: '', redirectTo: '', pathMatch: 'full' },
   {
-    path: 'branch-select',
+    path: '',
     loadComponent: () =>
       import('./public/branch-selector/branch-selector.component').then(
         (m) => m.BranchSelectorComponent
