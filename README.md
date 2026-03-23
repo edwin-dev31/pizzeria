@@ -1,10 +1,10 @@
-# Jiro's Pizza — Pizzeria Platform
+# 🍕 Jiro's Pizza — Pizzeria Platform
 
 Angular 17 SPA for a multi-branch pizzeria. Customers browse the menu, select products with size variants, and send orders via WhatsApp. Admins manage products, sections, branches and theme from a protected panel.
 
 ---
 
-## Stack
+## 🧱 Stack
 
 - Angular 17 (standalone components, signals)
 - Supabase (Postgres + Auth)
@@ -14,7 +14,7 @@ Angular 17 SPA for a multi-branch pizzeria. Customers browse the menu, select pr
 
 ---
 
-## Getting started
+## 🚀 Getting started
 
 ### 1. Prerequisites
 
@@ -38,13 +38,19 @@ cp .env.example .env
 | `CLOUDINARY_CLOUD_NAME` | Cloudinary → Dashboard |
 | `CLOUDINARY_UPLOAD_PRESET` | Cloudinary → Settings → Upload |
 
+> [!WARNING]
+> Never commit your `.env` file. It is already listed in `.gitignore`. The generated `environment.ts` files are also git-ignored.
+
 ### 3. Generate environment files
 
 ```bash
 npm run env:generate
 ```
 
-This reads `.env` and writes `src/environments/environment.ts` (dev) and `src/environments/environment.prod.ts` (prod with `__PLACEHOLDERS__` for runtime injection). These files are git-ignored and must be generated before every build.
+This reads `.env` and writes `src/environments/environment.ts` (dev) and `src/environments/environment.prod.ts` (prod with `__PLACEHOLDERS__` for runtime injection).
+
+> [!NOTE]
+> Environment files must be generated before every build. `npm start` and `npm run build` do this automatically.
 
 ### 4. Run database migrations
 
@@ -68,7 +74,7 @@ App runs at `http://localhost:4200`.
 
 ---
 
-## Scripts
+## 📜 Scripts
 
 | Command | Description |
 |---|---|
@@ -81,7 +87,7 @@ App runs at `http://localhost:4200`.
 
 ---
 
-## Docker
+## 🐳 Docker
 
 ### Local
 
@@ -89,7 +95,10 @@ App runs at `http://localhost:4200`.
 npm run docker:up
 ```
 
-App available at `http://localhost:8080`. Environment variables are injected at container startup via `scripts/entrypoint.sh`, which replaces `__PLACEHOLDERS__` in the built JS files.
+App available at `http://localhost:8080`.
+
+> [!NOTE]
+> Environment variables are injected at container startup via `scripts/entrypoint.sh`, which replaces `__PLACEHOLDERS__` in the built JS files. No secrets are baked into the image.
 
 ### Environment variables at runtime
 
@@ -104,7 +113,7 @@ docker run -p 8080:80 \
 
 ---
 
-## CI/CD
+## ⚙️ CI/CD
 
 The GitHub Actions workflow (`.github/workflows/docker-build-push.yml`) triggers on merge to `main` or manually via `workflow_dispatch`:
 
@@ -123,9 +132,12 @@ The GitHub Actions workflow (`.github/workflows/docker-build-push.yml`) triggers
 | `CLOUDINARY_CLOUD_NAME` | Cloudinary cloud name |
 | `CLOUDINARY_UPLOAD_PRESET` | Cloudinary upload preset |
 
+> [!IMPORTANT]
+> Add all secrets under your GitHub repository → Settings → Secrets and variables → Actions before running the workflow.
+
 ---
 
-## Project structure
+## 📁 Project structure
 
 ```
 pizza-project/
@@ -151,6 +163,21 @@ pizza-project/
 
 ---
 
-## Admin panel
+## 🔐 Admin panel
 
 Route: `/admin` — credentials are configured during the seed step.
+
+> [!CAUTION]
+> Change the default admin password immediately after the first login in a production environment.
+
+---
+
+## 📄 License
+
+This project is licensed under the **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)**.
+
+You are free to share and adapt the code for non-commercial purposes, as long as you give appropriate credit.
+Commercial use of any kind is strictly prohibited.
+
+> [!WARNING]
+> Using this project or any derivative work for commercial purposes without explicit written permission from the author is a violation of this license.
