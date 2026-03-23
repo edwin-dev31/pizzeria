@@ -40,9 +40,18 @@ interface ProductSeed {
   precio?: number;
 }
 
+interface ThemeConfigSeed {
+  color_background: string;
+  color_primary: string;
+  color_secondary: string;
+  color_text_light: string;
+  color_dark_support: string;
+}
+
 interface ModelJson {
+  theme_config: ThemeConfigSeed;
   branches: BranchSeed[];
-  [key: string]: ProductSeed[] | BranchSeed[];
+  [key: string]: ProductSeed[] | BranchSeed[] | ThemeConfigSeed;
 }
 
 // --- Load model.json (two levels up from scripts/) ---
@@ -108,7 +117,18 @@ async function seed(): Promise<void> {
   const branches = branchData as Array<{ id: string; slug: string }>;
   branches.forEach((b) => console.log(`  branch: ${b.slug} → ${b.id}`));
 
-  // 3. Sections + products per branch
+  // 3. Theme configs per branch
+  console.log('→ Insertando theme_configs...');
+  const { error: themeError } = await supabase.from('theme_configs').insert(
+    branches.map((b) => ({
+      branch_id: b.id,
+      ...model.theme_config,
+    }))
+  );
+  if (themeError) throw themeError;
+  console.log('  ✓ theme_configs insertados');
+
+  // 4. Sections + products per branch
   for (const branch of branches) {
     console.log(`\n→ Secciones y productos para branch: ${branch.slug}`);
 

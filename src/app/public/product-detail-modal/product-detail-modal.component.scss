@@ -123,7 +123,7 @@
     background: rgba(17, 13, 11, 0.72);
     backdrop-filter: blur(0.75rem);
     -webkit-backdrop-filter: blur(0.75rem);
-    border: 1px solid rgba(255, 185, 84, 0.35);
+    border: 1px solid rgba(255, 184, 0, 0.4);
     border-radius: 99px;
     font-family: 'Noto Serif', serif;
     font-size: 1.375rem;
@@ -189,7 +189,7 @@
     line-height: 1.8;
     margin: 0;
     padding-top: 1rem;
-    border-top: 1px solid rgba(87, 66, 58, 0.25);
+    border-top: 1px solid rgba(74, 46, 26, 0.3);
   }
 }
 
@@ -199,7 +199,7 @@
   align-items: center;
   gap: 0.75rem;
   padding-top: 1rem;
-  border-top: 1px solid rgba(87, 66, 58, 0.18);
+  border-top: 1px solid rgba(74, 46, 26, 0.22);
 }
 
 // ── Quantity stepper ──────────────────────────────────────────────────────────
@@ -222,9 +222,9 @@
     color: var(--on-surface, #eae0dd);
     transition: background var(--transition-smooth);
 
-    &:hover  { background: rgba(174, 67, 19, 0.3); }
-    &:active { background: rgba(174, 67, 19, 0.5); }
-    &:focus-visible { outline: 2px solid var(--color-primary, #ffb59a); }
+    &:hover  { background: rgba(220, 60, 0, 0.3); }
+    &:active { background: rgba(220, 60, 0, 0.5); }
+    &:focus-visible { outline: 2px solid var(--color-primary, #ff6a00); }
   }
 
   &__num {
@@ -245,8 +245,8 @@
   justify-content: center;
   gap: 0.5rem;
   padding: 1rem 1.5rem;
-  background: linear-gradient(135deg, #ae4313 0%, #d4622a 50%, #ffb59a 100%);
-  color: #3d1200;
+  background: linear-gradient(135deg, #c0280a 0%, #e84800 50%, #ff6a00 100%);
+  color: #1a0500;
   font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.01em;
@@ -263,7 +263,7 @@
 
   &:hover {
     transform: translateY(-0.125rem);
-    box-shadow: 0 0.75rem 2rem rgba(174, 67, 19, 0.45);
+    box-shadow: 0 0.75rem 2rem rgba(220, 60, 0, 0.5);
     filter: brightness(1.08);
 
     .pdm-cta__icon { transform: scale(1.15); }

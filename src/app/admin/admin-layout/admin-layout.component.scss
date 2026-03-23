@@ -117,7 +117,7 @@
   &__logout {
     padding: 0.625rem var(--space-3);
     background: transparent;
-    border: 1px solid rgba(174, 67, 19, 0.4);
+    border: 1px solid rgba(220, 60, 0, 0.4);
     border-radius: var(--radius-md);
     color: var(--color-primary, #ffb59a);
     font-family: 'Manrope', sans-serif;
@@ -127,7 +127,7 @@
     transition: background-color var(--transition-smooth), border-color var(--transition-smooth);
 
     &:hover {
-      background-color: rgba(174, 67, 19, 0.15);
+      background-color: rgba(220, 60, 0, 0.15);
       border-color: var(--color-primary-container, #ae4313);
     }
 

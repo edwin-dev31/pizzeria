@@ -1,39 +1,39 @@
-// ── Design System: The Gourmet Editorial ────────────────────────────────────
-// Palette from "Pizza's project" Stitch design system
+// ── Design System: Ardiente ──────────────────────────────────────────────────
+// Fire palette: deep charcoal, intense orange, golden yellow, ember red
 // ThemeService overwrites --color-* at runtime from Supabase theme_configs
 
 :root {
-  // Brand surfaces
-  --surface:                #161311;
-  --surface-dim:            #161311;
-  --surface-container-low:  #1f1b19;
-  --surface-container:      #231f1d;
-  --surface-container-high: #2e2927;
-  --surface-container-highest: #393431;
-  --surface-container-lowest: #110d0b;
-  --surface-bright:         #3d3836;
+  // Brand surfaces — near-black with warm undertone
+  --surface:                #0e0b09;
+  --surface-dim:            #0e0b09;
+  --surface-container-low:  #161009;
+  --surface-container:      #1c1410;
+  --surface-container-high: #261a13;
+  --surface-container-highest: #31211a;
+  --surface-container-lowest: #090604;
+  --surface-bright:         #3a2518;
 
   // Brand colors (overridable by ThemeService)
-  --color-bg:           #161311;
-  --color-primary:      #ffb59a;
-  --color-primary-container: #ae4313;
-  --color-secondary:    #ffb954;
-  --color-secondary-container: #d18a00;
-  --color-tertiary:     #ffb59d;
-  --color-tertiary-container: #915642;
-  --color-text-light:   #eae0dd;
-  --color-text-variant: #dfc0b6;
-  --color-dark-support: #502212;
-  --color-outline:      #a68b81;
-  --color-outline-variant: #57423a;
+  --color-bg:           #0e0b09;
+  --color-primary:      #ff6a00;          // fire orange
+  --color-primary-container: #c0280a;     // ember red
+  --color-secondary:    #ffb800;          // golden yellow
+  --color-secondary-container: #cc8800;
+  --color-tertiary:     #ff8c00;          // amber glow
+  --color-tertiary-container: #7a1e00;
+  --color-text-light:   #f5ede6;
+  --color-text-variant: #d4b49a;
+  --color-dark-support: #4a1500;
+  --color-outline:      #8a5a3a;
+  --color-outline-variant: #4a2e1a;
 
   // Semantic aliases
-  --on-surface:         #eae0dd;
-  --on-surface-variant: #dfc0b6;
-  --on-primary:         #5b1b00;
-  --on-primary-container: #ffdcd0;
-  --on-secondary:       #452b00;
-  --on-secondary-container: #462b00;
+  --on-surface:         #f5ede6;
+  --on-surface-variant: #d4b49a;
+  --on-primary:         #1a0500;
+  --on-primary-container: #ffd5b0;
+  --on-secondary:       #3a1e00;
+  --on-secondary-container: #3a1e00;
 
   // Spacing scale (7px base)
   --space-1: 0.4375rem;   // 7px
@@ -57,6 +57,6 @@
   --transition-spring: 400ms cubic-bezier(0.16, 1, 0.3, 1);
 
   // Shadows
-  --shadow-ambient: 0 1.25rem 2.5rem rgba(0, 0, 0, 0.12);
-  --shadow-float:   0 2rem 4rem rgba(0, 0, 0, 0.32);
+  --shadow-ambient: 0 1.25rem 2.5rem rgba(0, 0, 0, 0.18);
+  --shadow-float:   0 2rem 4rem rgba(0, 0, 0, 0.45);
 }
