@@ -23,12 +23,7 @@ jobs:
         with:
           node-version: 20
 
-      - name: Generate environment files
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
-          CLOUDINARY_UPLOAD_PRESET: ${{ secrets.CLOUDINARY_UPLOAD_PRESET }}
+      - name: Generate prod environment file (placeholders only)
         run: |
           npm ci --ignore-scripts
           node scripts/generate-env.mjs
