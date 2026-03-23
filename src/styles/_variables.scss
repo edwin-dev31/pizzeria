@@ -1,0 +1,10 @@
+// CSS custom property declarations
+// These are the default theme values; ThemeService overwrites them at runtime
+// from theme_configs stored in Supabase.
+:root {
+  --color-bg: #181412;
+  --color-primary: #ae4313;
+  --color-secondary: #e99e21;
+  --color-text-light: #d6d1c5;
+  --color-dark-support: #502212;
+}

@@ -1,0 +1,116 @@
+<section class="sections">
+  <header class="sections__header">
+    <h1 class="sections__title">Menu Sections</h1>
+    <button
+      class="sections__btn sections__btn--primary"
+      (click)="showAddForm()"
+      [disabled]="isAddingSection()"
+    >
+      + Add Section
+    </button>
+  </header>
+
+  @if (isAddingSection()) {
+    <div class="sections__add-form">
+      <input
+        class="sections__input"
+        type="text"
+        placeholder="Section name"
+        [value]="newSectionName()"
+        (input)="newSectionName.set($any($event.target).value)"
+        (keyup.enter)="onAddSubmit()"
+        autofocus
+      />
+      <div class="sections__add-form-actions">
+        <button
+          class="sections__btn sections__btn--primary"
+          (click)="onAddSubmit()"
+          [disabled]="!newSectionName().trim()"
+        >
+          Save
+        </button>
+        <button class="sections__btn sections__btn--ghost" (click)="cancelAdd()">
+          Cancel
+        </button>
+      </div>
+    </div>
+  }
+
+  @if (isLoading()) {
+    <p class="sections__loading">Loading sections…</p>
+  } @else if (sections().length === 0) {
+    <p class="sections__empty">No sections yet. Add one to get started.</p>
+  } @else {
+    <ul class="sections__list">
+      @for (section of sections(); track section.id) {
+        <li class="sections__item">
+          @if (editingId() === section.id) {
+            <div class="sections__edit-form">
+              <input
+                class="sections__input"
+                type="text"
+                [value]="editingName()"
+                (input)="editingName.set($any($event.target).value)"
+                (keyup.enter)="saveEdit(section.id)"
+                (keyup.escape)="cancelEdit()"
+                autofocus
+                aria-label="Edit section name"
+              />
+              <div class="sections__edit-form-actions">
+                <button
+                  class="sections__btn sections__btn--primary"
+                  (click)="saveEdit(section.id)"
+                  [disabled]="!editingName().trim()"
+                >
+                  Save
+                </button>
+                <button class="sections__btn sections__btn--ghost" (click)="cancelEdit()">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          } @else {
+            <div class="sections__item-info">
+              <span class="sections__item-name">{{ section.name }}</span>
+              <span class="sections__item-badge">{{ section.product_count }} products</span>
+            </div>
+
+            <div class="sections__item-controls">
+              <label class="sections__order-label" [for]="'order-' + section.id">Order</label>
+              <input
+                class="sections__order-input"
+                type="number"
+                [id]="'order-' + section.id"
+                [value]="section.display_order"
+                min="0"
+                (change)="onOrderChange(section.id, $event)"
+              />
+              <button
+                class="sections__btn sections__btn--secondary"
+                (click)="startEdit(section)"
+                [attr.aria-label]="'Edit section ' + section.name"
+              >
+                Edit
+              </button>
+              <button
+                class="sections__btn sections__btn--danger"
+                (click)="confirmDelete(section.id)"
+                [attr.aria-label]="'Delete section ' + section.name"
+              >
+                Delete
+              </button>
+            </div>
+          }
+        </li>
+      }
+    </ul>
+  }
+
+  @if (deletingId()) {
+    <app-confirm-dialog
+      message="Delete this section? All its products will also be deleted."
+      (confirmed)="deleteSection(deletingId()!)"
+      (cancelled)="cancelDelete()"
+    />
+  }
+</section>

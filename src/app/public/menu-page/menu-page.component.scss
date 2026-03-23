@@ -1,0 +1,79 @@
+@use '../../../styles/mixins' as *;
+
+:host {
+  display: block;
+  min-height: 100vh;
+  min-width: 20rem; // 320px minimum viewport
+  background-color: var(--color-bg, #181412);
+  color: var(--color-text-light, #d6d1c5);
+}
+
+.menu-page {
+  width: 100%;
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 0 1rem 6rem; // bottom padding reserves space for cart drawer
+
+  // ── Header ──────────────────────────────────────────────────────────────
+  &__header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: var(--color-dark-support, #502212);
+    padding: 1rem;
+    margin: 0 -1rem; // bleed to full width
+    text-align: center;
+  }
+
+  &__branch-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text-light, #d6d1c5);
+    margin: 0;
+    letter-spacing: 0.03em;
+  }
+
+  // ── Content ─────────────────────────────────────────────────────────────
+  &__content {
+    padding-top: 1.5rem;
+  }
+
+  &__sections {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  // ── Loading state ────────────────────────────────────────────────────────
+  &__loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem 1rem;
+  }
+
+  &__loading-text {
+    font-size: 1rem;
+    color: var(--color-text-light, #d6d1c5);
+    opacity: 0.6;
+    margin: 0;
+  }
+
+  // ── Responsive ──────────────────────────────────────────────────────────
+  @include bp(md) {
+    padding: 0 2rem 6rem;
+
+    &__header {
+      padding: 1.25rem 2rem;
+      margin: 0 -2rem;
+    }
+
+    &__branch-name {
+      font-size: 1.5rem;
+    }
+
+    &__content {
+      padding-top: 2rem;
+    }
+  }
+}

@@ -1,0 +1,39 @@
+<div class="color-picker">
+  <label class="color-picker__label" [for]="'color-text-' + label()">
+    {{ label() }}
+  </label>
+
+  <div class="color-picker__controls">
+    <input
+      class="color-picker__native"
+      type="color"
+      [id]="'color-native-' + label()"
+      [value]="hexInput()"
+      (input)="onColorPickerChange($event)"
+      [attr.aria-label]="label() + ' color picker'"
+    />
+
+    <input
+      class="color-picker__text"
+      type="text"
+      [id]="'color-text-' + label()"
+      [value]="hexInput()"
+      (input)="onTextInputChange($event)"
+      [class.color-picker__text--invalid]="isInvalid()"
+      placeholder="#000000"
+      maxlength="7"
+      [attr.aria-describedby]="isInvalid() ? 'color-error-' + label() : null"
+      [attr.aria-invalid]="isInvalid()"
+    />
+  </div>
+
+  @if (isInvalid()) {
+    <p
+      class="color-picker__error"
+      [id]="'color-error-' + label()"
+      role="alert"
+    >
+      Invalid hex color. Use format #RRGGBB.
+    </p>
+  }
+</div>

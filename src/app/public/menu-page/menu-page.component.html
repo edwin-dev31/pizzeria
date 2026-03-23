@@ -1,0 +1,23 @@
+<main class="menu-page" role="main">
+  <header class="menu-page__header">
+    @if (activeBranch(); as branch) {
+      <h1 class="menu-page__branch-name">{{ branch.display_name }}</h1>
+    }
+  </header>
+
+  <div class="menu-page__content">
+    @if (sections().length === 0) {
+      <div class="menu-page__loading" role="status" aria-live="polite">
+        <p class="menu-page__loading-text">Cargando menú…</p>
+      </div>
+    } @else {
+      <div class="menu-page__sections">
+        @for (section of sections(); track section.id) {
+          <app-menu-section [section]="section" />
+        }
+      </div>
+    }
+  </div>
+
+  <app-cart-drawer />
+</main>

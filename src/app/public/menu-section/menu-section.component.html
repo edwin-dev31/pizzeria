@@ -1,0 +1,16 @@
+@if (hasAvailableProducts()) {
+  <section class="menu-section" [attr.aria-labelledby]="'section-title-' + section().id">
+    <h2
+      class="menu-section__title"
+      id="section-title-{{ section().id }}"
+    >
+      {{ section().name }}
+    </h2>
+
+    <div class="menu-section__grid">
+      @for (product of availableProducts(); track product.id) {
+        <app-product-card [product]="product" />
+      }
+    </div>
+  </section>
+}

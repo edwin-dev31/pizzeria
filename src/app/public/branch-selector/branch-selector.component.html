@@ -1,0 +1,16 @@
+<nav class="branch-selector">
+  <h1 class="branch-selector__title">Selecciona tu sucursal</h1>
+  <ul class="branch-selector__list">
+    @for (branch of branches(); track branch.id) {
+      <li class="branch-selector__item">
+        <button
+          class="branch-selector__btn"
+          type="button"
+          (click)="selectBranch(branch)"
+        >
+          {{ branch.display_name }}
+        </button>
+      </li>
+    }
+  </ul>
+</nav>

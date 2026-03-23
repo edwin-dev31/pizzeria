@@ -1,0 +1,95 @@
+<section class="theme-editor">
+  <header class="theme-editor__header">
+    <h2 class="theme-editor__title">Theme Editor</h2>
+    <p class="theme-editor__subtitle">Changes are previewed live. Click Save to persist.</p>
+  </header>
+
+  <div class="theme-editor__fields">
+    <div class="theme-editor__field">
+      <app-color-picker
+        label="Background"
+        [value]="background()"
+        (valueChange)="onBackgroundChange($event)"
+        (validationError)="onValidationError('background', $event)"
+      />
+      @if (validationErrors()['background']) {
+        <p class="theme-editor__field-error">{{ validationErrors()['background'] }}</p>
+      }
+    </div>
+
+    <div class="theme-editor__field">
+      <app-color-picker
+        label="Primary"
+        [value]="primary()"
+        (valueChange)="onPrimaryChange($event)"
+        (validationError)="onValidationError('primary', $event)"
+      />
+      @if (validationErrors()['primary']) {
+        <p class="theme-editor__field-error">{{ validationErrors()['primary'] }}</p>
+      }
+    </div>
+
+    <div class="theme-editor__field">
+      <app-color-picker
+        label="Secondary"
+        [value]="secondary()"
+        (valueChange)="onSecondaryChange($event)"
+        (validationError)="onValidationError('secondary', $event)"
+      />
+      @if (validationErrors()['secondary']) {
+        <p class="theme-editor__field-error">{{ validationErrors()['secondary'] }}</p>
+      }
+    </div>
+
+    <div class="theme-editor__field">
+      <app-color-picker
+        label="Light Text"
+        [value]="textLight()"
+        (valueChange)="onTextLightChange($event)"
+        (validationError)="onValidationError('textLight', $event)"
+      />
+      @if (validationErrors()['textLight']) {
+        <p class="theme-editor__field-error">{{ validationErrors()['textLight'] }}</p>
+      }
+    </div>
+
+    <div class="theme-editor__field">
+      <app-color-picker
+        label="Dark Support"
+        [value]="darkSupport()"
+        (valueChange)="onDarkSupportChange($event)"
+        (validationError)="onValidationError('darkSupport', $event)"
+      />
+      @if (validationErrors()['darkSupport']) {
+        <p class="theme-editor__field-error">{{ validationErrors()['darkSupport'] }}</p>
+      }
+    </div>
+  </div>
+
+  @if (saveError()) {
+    <p class="theme-editor__save-error" role="alert">{{ saveError() }}</p>
+  }
+
+  @if (saveSuccess()) {
+    <p class="theme-editor__save-success" role="status">Theme saved successfully.</p>
+  }
+
+  <div class="theme-editor__actions">
+    <button
+      class="theme-editor__btn theme-editor__btn--reset"
+      type="button"
+      (click)="reset()"
+    >
+      Reset to Defaults
+    </button>
+
+    <button
+      class="theme-editor__btn theme-editor__btn--save"
+      type="button"
+      [disabled]="isSaving() || hasErrors()"
+      (click)="save()"
+    >
+      {{ isSaving() ? 'Saving…' : 'Save Theme' }}
+    </button>
+  </div>
+</section>

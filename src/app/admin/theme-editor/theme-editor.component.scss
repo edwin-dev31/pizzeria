@@ -1,0 +1,83 @@
+.theme-editor {
+  padding: 2rem;
+  max-width: 40rem;
+
+  &__header {
+    margin-bottom: 2rem;
+  }
+
+  &__title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem;
+  }
+
+  &__subtitle {
+    font-size: 0.875rem;
+    color: var(--color-text-light, #d6d1c5);
+    margin: 0;
+  }
+
+  &__fields {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  &__field-error {
+    font-size: 0.75rem;
+    color: #e53e3e;
+    margin: 0;
+  }
+
+  &__save-error {
+    font-size: 0.875rem;
+    color: #e53e3e;
+    margin: 0 0 1rem;
+  }
+
+  &__save-success {
+    font-size: 0.875rem;
+    color: #38a169;
+    margin: 0 0 1rem;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  &__btn {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &--reset {
+      background-color: transparent;
+      border: 0.0625rem solid currentColor;
+      color: var(--color-text-light, #d6d1c5);
+    }
+
+    &--save {
+      background-color: var(--color-primary, #ae4313);
+      color: #fff;
+    }
+  }
+}

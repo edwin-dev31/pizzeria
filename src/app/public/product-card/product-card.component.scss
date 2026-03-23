@@ -1,0 +1,59 @@
+.product-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-bg, #181412);
+  border: 0.0625rem solid var(--color-dark-support, #502212);
+  border-radius: 0.75rem;
+  overflow: hidden;
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+  }
+
+  &__name {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-text-light, #d6d1c5);
+    line-height: 1.3;
+  }
+
+  &__price {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-secondary, #e99e21);
+  }
+
+  &__description {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--color-text-light, #d6d1c5);
+    opacity: 0.8;
+    line-height: 1.5;
+  }
+
+  &__btn {
+    margin-top: 0.5rem;
+    padding: 0.625rem 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    background-color: var(--color-primary, #ae4313);
+    color: var(--color-text-light, #d6d1c5);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 0.85;
+    }
+
+    &:active {
+      opacity: 0.7;
+    }
+  }
+}

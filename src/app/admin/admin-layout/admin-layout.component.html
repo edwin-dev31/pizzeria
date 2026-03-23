@@ -1,0 +1,56 @@
+<div class="admin-layout">
+  <nav class="admin-nav">
+    <div class="admin-nav__brand">
+      <span class="admin-nav__logo">🍕</span>
+      <span class="admin-nav__title">Admin</span>
+    </div>
+
+    <div class="admin-nav__branch">
+      <select
+        class="admin-nav__branch-select"
+        [value]="branchService.activeBranch()?.id ?? ''"
+        (change)="onBranchChange($any($event.target).value)"
+      >
+        @for (branch of branchService.branches(); track branch.id) {
+          <option [value]="branch.id">{{ branch.display_name }}</option>
+        }
+      </select>
+    </div>
+
+    <ul class="admin-nav__links">
+      <li>
+        <a class="admin-nav__link" routerLink="/admin/sections" routerLinkActive="admin-nav__link--active">
+          📋 Secciones
+        </a>
+      </li>
+      <li>
+        <a class="admin-nav__link" routerLink="/admin/products" routerLinkActive="admin-nav__link--active">
+          🍔 Productos
+        </a>
+      </li>
+      <li>
+        <a class="admin-nav__link" routerLink="/admin/theme-editor" routerLinkActive="admin-nav__link--active">
+          🎨 Tema
+        </a>
+      </li>
+      <li>
+        <a class="admin-nav__link" routerLink="/admin/branch-settings" routerLinkActive="admin-nav__link--active">
+          ⚙️ Sucursal
+        </a>
+      </li>
+    </ul>
+
+    <div class="admin-nav__footer">
+      <a class="admin-nav__link" routerLink="/branch-select" target="_blank">
+        👁️ Ver menú
+      </a>
+      <button class="admin-nav__logout" type="button" (click)="logout()">
+        Cerrar sesión
+      </button>
+    </div>
+  </nav>
+
+  <main class="admin-main">
+    <router-outlet />
+  </main>
+</div>

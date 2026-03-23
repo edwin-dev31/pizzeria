@@ -1,0 +1,34 @@
+// Breakpoint helpers — mobile-first (min-width)
+// Usage: @include bp(md) { ... }
+
+$breakpoints: (
+  'sm': 36rem,   // 576px
+  'md': 48rem,   // 768px
+  'lg': 64rem,   // 1024px
+  'xl': 80rem,   // 1280px
+);
+
+@mixin bp($name) {
+  $value: map-get($breakpoints, $name);
+
+  @if $value == null {
+    @warn "Unknown breakpoint: #{$name}. Available: #{map-keys($breakpoints)}";
+  } @else {
+    @media (min-width: #{$value}) {
+      @content;
+    }
+  }
+}
+
+// Max-width helper (desktop-down)
+@mixin bp-down($name) {
+  $value: map-get($breakpoints, $name);
+
+  @if $value == null {
+    @warn "Unknown breakpoint: #{$name}.";
+  } @else {
+    @media (max-width: calc(#{$value} - 0.0625rem)) {
+      @content;
+    }
+  }
+}

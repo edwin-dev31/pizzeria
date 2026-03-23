@@ -1,0 +1,40 @@
+<div class="carousel">
+  <div class="carousel__image-wrapper">
+    @if (currentImage(); as img) {
+      <img
+        [src]="img.url"
+        [alt]="'Product image ' + (currentIndex() + 1)"
+        (error)="onImageError($event)"
+        class="carousel__image"
+      />
+    } @else {
+      <img
+        src="assets/placeholder.png"
+        alt="No image available"
+        class="carousel__image carousel__image--placeholder"
+      />
+    }
+  </div>
+
+  @if (hasMultiple()) {
+    <button
+      class="carousel__btn carousel__btn--prev"
+      (click)="prev()"
+      aria-label="Previous image"
+      type="button"
+    >
+      &#8249;
+    </button>
+
+    <button
+      class="carousel__btn carousel__btn--next"
+      (click)="next()"
+      aria-label="Next image"
+      type="button"
+    >
+      &#8250;
+    </button>
+
+    <span class="carousel__counter">{{ counter() }}</span>
+  }
+</div>

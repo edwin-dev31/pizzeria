@@ -1,0 +1,111 @@
+<section class="products">
+  <header class="products__header">
+    <h1 class="products__title">Products</h1>
+    @if (editingProduct() === undefined) {
+      <button
+        class="products__btn products__btn--primary"
+        type="button"
+        (click)="openCreateForm()"
+      >
+        + New Product
+      </button>
+    }
+  </header>
+
+  <!-- Product form (create or edit) -->
+  @if (editingProduct() !== undefined) {
+    <app-product-form
+      [product]="editingProduct() ?? null"
+      [sections]="sections()"
+      (saved)="onFormSaved($event)"
+      (cancelled)="closeForm()"
+    />
+  } @else {
+    <div class="products__section-selector">
+      <label class="products__label" for="section-select">Section</label>
+      <select
+        class="products__select"
+        id="section-select"
+        [value]="selectedSectionId() ?? ''"
+        (change)="onSectionChange($any($event.target).value)"
+      >
+        <option value="" disabled>Select a section…</option>
+        @for (section of sections(); track section.id) {
+          <option [value]="section.id">{{ section.name }}</option>
+        }
+      </select>
+    </div>
+
+    @if (!selectedSectionId()) {
+      <p class="products__empty">Select a section to view its products.</p>
+    } @else if (isLoading()) {
+      <p class="products__loading">Loading products…</p>
+    } @else if (products().length === 0) {
+      <p class="products__empty">No products in this section yet.</p>
+    } @else {
+      <ul class="products__list">
+        @for (product of products(); track product.id) {
+          <li class="products__item">
+            <div class="products__item-info">
+              <span class="products__item-name">{{ product.name }}</span>
+              <span class="products__item-price">{{ product.price | number:'1.2-2' }}</span>
+              <span
+                class="products__item-status"
+                [class.products__item-status--active]="product.is_available"
+                [class.products__item-status--inactive]="!product.is_available"
+              >
+                {{ product.is_available ? 'Available' : 'Unavailable' }}
+              </span>
+            </div>
+
+            <div class="products__item-controls">
+              <label class="products__order-label" [for]="'order-' + product.id">Order</label>
+              <input
+                class="products__order-input"
+                type="number"
+                [id]="'order-' + product.id"
+                [value]="product.display_order"
+                min="0"
+                (change)="onOrderChange(product.id, $event)"
+                [attr.aria-label]="'Display order for ' + product.name"
+              />
+
+              <button
+                class="products__btn products__btn--toggle"
+                [class.products__btn--toggle-off]="!product.is_available"
+                (click)="toggleAvailability(product)"
+                [attr.aria-label]="(product.is_available ? 'Deactivate' : 'Activate') + ' ' + product.name"
+              >
+                {{ product.is_available ? 'Deactivate' : 'Activate' }}
+              </button>
+
+              <button
+                class="products__btn products__btn--edit"
+                (click)="openEditForm(product)"
+                [attr.aria-label]="'Edit ' + product.name"
+              >
+                Edit
+              </button>
+
+              <button
+                class="products__btn products__btn--danger"
+                (click)="confirmDelete(product.id)"
+                [attr.aria-label]="'Delete ' + product.name"
+              >
+                Delete
+              </button>
+            </div>
+          </li>
+        }
+      </ul>
+    }
+  }
+
+  @if (deletingId()) {
+    <app-confirm-dialog
+      message="Delete this product? This action cannot be undone."
+      (confirmed)="deleteProduct(deletingId()!)"
+      (cancelled)="cancelDelete()"
+    />
+  }
+</section>

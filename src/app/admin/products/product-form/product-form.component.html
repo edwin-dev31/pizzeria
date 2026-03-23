@@ -1,0 +1,164 @@
+<form class="product-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+  <h2 class="product-form__title">
+    {{ isEditMode() ? 'Edit Product' : 'New Product' }}
+  </h2>
+
+  <!-- Name -->
+  <div class="product-form__field">
+    <label class="product-form__label" for="pf-name">Name <span aria-hidden="true">*</span></label>
+    <input
+      class="product-form__input"
+      id="pf-name"
+      type="text"
+      formControlName="name"
+      placeholder="Product name"
+      autocomplete="off"
+    />
+    @if (form.controls.name.invalid && form.controls.name.touched) {
+      <span class="product-form__error" role="alert">Name is required.</span>
+    }
+  </div>
+
+  <!-- Description -->
+  <div class="product-form__field">
+    <label class="product-form__label" for="pf-description">Description</label>
+    <textarea
+      class="product-form__textarea"
+      id="pf-description"
+      formControlName="description"
+      rows="3"
+      placeholder="Optional description"
+    ></textarea>
+  </div>
+
+  <!-- Price -->
+  <div class="product-form__field">
+    <label class="product-form__label" for="pf-price">Price <span aria-hidden="true">*</span></label>
+    <input
+      class="product-form__input product-form__input--short"
+      id="pf-price"
+      type="number"
+      formControlName="price"
+      min="0"
+      step="0.01"
+      placeholder="0.00"
+    />
+    @if (form.controls.price.invalid && form.controls.price.touched) {
+      <span class="product-form__error" role="alert">Price must be 0 or greater.</span>
+    }
+  </div>
+
+  <!-- Section -->
+  <div class="product-form__field">
+    <label class="product-form__label" for="pf-section">Section <span aria-hidden="true">*</span></label>
+    <select
+      class="product-form__select"
+      id="pf-section"
+      formControlName="section_id"
+    >
+      <option value="" disabled>Select a section…</option>
+      @for (section of sections(); track trackBySection($index, section)) {
+        <option [value]="section.id">{{ section.name }}</option>
+      }
+    </select>
+    @if (form.controls.section_id.invalid && form.controls.section_id.touched) {
+      <span class="product-form__error" role="alert">Section is required.</span>
+    }
+  </div>
+
+  <!-- Existing images -->
+  @if (existingImages().length > 0) {
+    <div class="product-form__field">
+      <span class="product-form__label">Current Images</span>
+      <ul class="product-form__image-list">
+        @for (image of existingImages(); track trackByImage($index, image)) {
+          <li class="product-form__image-item">
+            <img
+              class="product-form__image-thumb"
+              [ngSrc]="image.url"
+              width="64"
+              height="64"
+              [alt]="'Product image ' + ($index + 1)"
+            />
+            <button
+              class="product-form__btn product-form__btn--icon product-form__btn--danger"
+              type="button"
+              (click)="deleteExistingImage(image)"
+              [attr.aria-label]="'Delete image ' + ($index + 1)"
+            >
+              ✕
+            </button>
+          </li>
+        }
+      </ul>
+    </div>
+  }
+
+  <!-- Image upload -->
+  <div class="product-form__field">
+    <span class="product-form__label">Upload Images</span>
+    <label class="product-form__upload-label" for="pf-images">
+      Choose files…
+      <input
+        class="product-form__file-input"
+        id="pf-images"
+        type="file"
+        multiple
+        accept="image/*"
+        (change)="onFilesSelected($event)"
+        aria-label="Upload product images"
+      />
+    </label>
+
+    @if (uploadTasks().length > 0) {
+      <ul class="product-form__upload-list">
+        @for (task of uploadTasks(); track trackByTask($index, task)) {
+          <li class="product-form__upload-item">
+            <span class="product-form__upload-name">{{ task.file.name }}</span>
+
+            @if (!task.done && !task.error) {
+              <div class="product-form__progress" role="progressbar" [attr.aria-valuenow]="task.progress" aria-valuemin="0" aria-valuemax="100">
+                <div class="product-form__progress-bar" [style.width.%]="task.progress"></div>
+              </div>
+              <span class="product-form__upload-pct">{{ task.progress }}%</span>
+            } @else if (task.done) {
+              <span class="product-form__upload-status product-form__upload-status--done">✓ Done</span>
+            } @else {
+              <span class="product-form__upload-status product-form__upload-status--error">✗ Error</span>
+            }
+
+            @if (!task.done) {
+              <button
+                class="product-form__btn product-form__btn--icon"
+                type="button"
+                (click)="removeUploadTask($index)"
+                aria-label="Remove file"
+              >
+                ✕
+              </button>
+            }
+          </li>
+        }
+      </ul>
+    }
+  </div>
+
+  <!-- Actions -->
+  <div class="product-form__actions">
+    <button
+      class="product-form__btn product-form__btn--secondary"
+      type="button"
+      (click)="onCancel()"
+      [disabled]="isSaving()"
+    >
+      Cancel
+    </button>
+    <button
+      class="product-form__btn product-form__btn--primary"
+      type="submit"
+      [disabled]="form.invalid || isSaving()"
+    >
+      {{ isSaving() ? 'Saving…' : (isEditMode() ? 'Update' : 'Create') }}
+    </button>
+  </div>
+</form>

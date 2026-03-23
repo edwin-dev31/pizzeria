@@ -1,0 +1,90 @@
+<!-- Fixed bottom bar — always visible -->
+<div class="cart-bar" role="complementary" aria-label="Resumen del carrito">
+  <span class="cart-bar__count">
+    {{ cartService.items().length }} {{ cartService.items().length === 1 ? 'producto' : 'productos' }}
+  </span>
+  <button
+    class="cart-bar__btn"
+    type="button"
+    (click)="open()"
+    aria-haspopup="dialog"
+    [attr.aria-expanded]="isOpen()"
+  >
+    Ver carrito
+  </button>
+</div>
+
+<!-- Backdrop -->
+@if (isOpen()) {
+  <div
+    class="cart-backdrop"
+    (click)="close()"
+    aria-hidden="true"
+  ></div>
+}
+
+<!-- Slide-in drawer panel -->
+<aside
+  class="cart-drawer"
+  [class.cart-drawer--open]="isOpen()"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Carrito de compras"
+>
+  <!-- Header -->
+  <header class="cart-drawer__header">
+    <h2 class="cart-drawer__title">Carrito</h2>
+    <button
+      class="cart-drawer__close"
+      type="button"
+      (click)="close()"
+      aria-label="Cerrar carrito"
+    >
+      ✕
+    </button>
+  </header>
+
+  <!-- Items list -->
+  <ul class="cart-drawer__list" aria-label="Productos en el carrito">
+    @for (item of cartService.items(); track item.product.id) {
+      <li class="cart-drawer__item">
+        <div class="cart-drawer__item-info">
+          <span class="cart-drawer__item-name">{{ item.product.name }}</span>
+          <span class="cart-drawer__item-qty">x{{ item.quantity }}</span>
+          <span class="cart-drawer__item-price">
+            {{ item.product.price * item.quantity | currencyFormat: currencySymbol }}
+          </span>
+        </div>
+        <button
+          class="cart-drawer__item-remove"
+          type="button"
+          (click)="removeItem(item.product.id)"
+          [attr.aria-label]="'Eliminar ' + item.product.name"
+        >
+          Eliminar
+        </button>
+      </li>
+    } @empty {
+      <li class="cart-drawer__empty">El carrito está vacío</li>
+    }
+  </ul>
+
+  <!-- Footer: total + submit -->
+  <footer class="cart-drawer__footer">
+    <div class="cart-drawer__total">
+      <span class="cart-drawer__total-label">Total</span>
+      <span class="cart-drawer__total-value">
+        {{ cartService.total() | currencyFormat: currencySymbol }}
+      </span>
+    </div>
+    <button
+      class="cart-drawer__submit"
+      type="button"
+      (click)="submitOrder()"
+      [disabled]="cartService.items().length === 0"
+      aria-label="Enviar pedido por WhatsApp"
+    >
+      Enviar pedido por WhatsApp
+    </button>
+  </footer>
+</aside>

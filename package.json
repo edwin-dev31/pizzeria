@@ -1,0 +1,40 @@
+{
+  "name": "pizzeria-platform",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "build:prod": "ng build --configuration production",
+    "watch": "ng build --watch --configuration development",
+    "seed": "node --env-file=.env node_modules/.bin/ts-node --project scripts/tsconfig.scripts.json scripts/seed.ts",
+    "docker:build": "docker build -t pizzeria-platform .",
+    "docker:up": "docker compose up --build",
+    "docker:down": "docker compose down"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "^17.3.0",
+    "@angular/common": "^17.3.0",
+    "@angular/compiler": "^17.3.0",
+    "@angular/core": "^17.3.0",
+    "@angular/forms": "^17.3.0",
+    "@angular/platform-browser": "^17.3.0",
+    "@angular/platform-browser-dynamic": "^17.3.0",
+    "@angular/router": "^17.3.0",
+    "@supabase/supabase-js": "^2.43.4",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.6.0",
+    "zone.js": "~0.14.3"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^17.3.0",
+    "@angular/cli": "^17.3.0",
+    "@angular/compiler-cli": "^17.3.0",
+    "@types/node": "^20.11.0",
+    "dotenv": "^17.3.1",
+    "sass": "^1.71.0",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.4.2"
+  }
+}

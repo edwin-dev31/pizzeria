@@ -1,0 +1,66 @@
+<section class="branch-settings">
+  <h2 class="branch-settings__title">Branch Settings</h2>
+
+  <form class="branch-settings__form" [formGroup]="form" (ngSubmit)="save()">
+
+    <div class="branch-settings__field">
+      <label class="branch-settings__label" for="display_name">Display Name</label>
+      <input
+        class="branch-settings__input"
+        [class.branch-settings__input--error]="displayNameControl.invalid && displayNameControl.touched"
+        id="display_name"
+        type="text"
+        formControlName="display_name"
+        placeholder="e.g. Downtown Branch"
+      />
+      @if (displayNameControl.invalid && displayNameControl.touched) {
+        <span class="branch-settings__error">Display name is required.</span>
+      }
+    </div>
+
+    <div class="branch-settings__field">
+      <label class="branch-settings__label" for="whatsapp_number">WhatsApp Number</label>
+      <input
+        class="branch-settings__input"
+        [class.branch-settings__input--error]="whatsappControl.invalid && whatsappControl.touched"
+        id="whatsapp_number"
+        type="text"
+        formControlName="whatsapp_number"
+        placeholder="e.g. 18091234567"
+      />
+      @if (whatsappControl.touched) {
+        @if (whatsappControl.hasError('required')) {
+          <span class="branch-settings__error">WhatsApp number is required.</span>
+        } @else if (whatsappControl.hasError('whatsappFormat')) {
+          <span class="branch-settings__error">Must be digits only, 7–15 characters (no + prefix).</span>
+        }
+      }
+    </div>
+
+    <div class="branch-settings__field">
+      <label class="branch-settings__label" for="currency_symbol">Currency Symbol</label>
+      <input
+        class="branch-settings__input"
+        [class.branch-settings__input--error]="currencyControl.invalid && currencyControl.touched"
+        id="currency_symbol"
+        type="text"
+        formControlName="currency_symbol"
+        placeholder="e.g. $"
+      />
+      @if (currencyControl.invalid && currencyControl.touched) {
+        <span class="branch-settings__error">Currency symbol is required.</span>
+      }
+    </div>
+
+    <div class="branch-settings__actions">
+      <button
+        class="branch-settings__btn branch-settings__btn--primary"
+        type="submit"
+        [disabled]="isSaving()"
+      >
+        {{ isSaving() ? 'Saving…' : 'Save Settings' }}
+      </button>
+    </div>
+
+  </form>
+</section>

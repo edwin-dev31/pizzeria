@@ -1,0 +1,23 @@
+<article class="product-card">
+  <app-image-carousel [images]="product().images ?? []" />
+
+  <div class="product-card__body">
+    <h3 class="product-card__name">{{ product().name }}</h3>
+
+    <p class="product-card__price">
+      {{ product().price | currencyFormat: currencySymbol }}
+    </p>
+
+    @if (product().description) {
+      <p class="product-card__description">{{ product().description }}</p>
+    }
+
+    <button
+      class="product-card__btn"
+      type="button"
+      (click)="addToCart()"
+    >
+      Agregar al carrito
+    </button>
+  </div>
+</article>
