@@ -1,16 +1,99 @@
-<nav class="branch-selector">
-  <h1 class="branch-selector__title">Selecciona tu sucursal</h1>
-  <ul class="branch-selector__list">
-    @for (branch of branches(); track branch.id) {
-      <li class="branch-selector__item">
-        <button
-          class="branch-selector__btn"
-          type="button"
-          (click)="selectBranch(branch)"
-        >
-          {{ branch.display_name }}
-        </button>
-      </li>
-    }
-  </ul>
+<!-- ── Navbar ─────────────────────────────────────────────────────────────── -->
+<nav class="bs-nav">
+  <span class="bs-nav__logo">
+    <span class="bs-nav__logo-text">Jiro Pizzería</span>
+  </span>
 </nav>
+
+<!-- ── Hero ──────────────────────────────────────────────────────────────── -->
+<section class="bs-hero" aria-label="Bienvenida">
+  <div class="bs-hero__bg" aria-hidden="true">
+    <img
+      class="bs-hero__bg-img"
+      src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=1600&q=80"
+      alt=""
+    />
+    <div class="bs-hero__overlay"></div>
+  </div>
+
+  <div class="bs-hero__content">
+    <span class="bs-hero__eyebrow">Bienvenidos a la experiencia</span>
+    <h1 class="bs-hero__title">
+      Nuestras<br>
+      <em class="bs-hero__title-accent">Sedes</em>
+    </h1>
+    <p class="bs-hero__subtitle">
+      Selecciona el destino donde comenzará tu próxima aventura culinaria.
+      Ubicaciones diseñadas para el placer de tus sentidos.
+    </p>
+  </div>
+</section>
+
+<!-- ── Branch cards ───────────────────────────────────────────────────────── -->
+<section class="bs-branches" aria-label="Sucursales disponibles">
+  <div class="bs-branches__grid">
+    @for (branch of branches(); track branch.id; let i = $index) {
+      <article
+        class="bs-card"
+        [style.animation-delay]="(i * 0.12) + 's'"
+        (click)="selectBranch(branch)"
+        (keydown.enter)="selectBranch(branch)"
+        (keydown.space)="selectBranch(branch)"
+        role="button"
+        tabindex="0"
+        [attr.aria-label]="'Ver menú de ' + branch.display_name"
+      >
+        <div class="bs-card__image-wrap">
+          <img
+            class="bs-card__image"
+            [src]="branch.cover_image_url || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&q=80'"
+            [alt]="branch.display_name"
+          />
+        </div>
+
+        <div class="bs-card__body">
+          <h2 class="bs-card__name">{{ branch.display_name }}</h2>
+          @if (branch.address) {
+            <p class="bs-card__address">{{ branch.address }}</p>
+          }
+          @if (branch.description) {
+            <p class="bs-card__description">{{ branch.description }}</p>
+          }
+        </div>
+      </article>
+    }
+  </div>
+</section>
+
+<!-- ── CTA section ────────────────────────────────────────────────────────── -->
+<section class="bs-cta" aria-label="Llamada a la acción">
+  <div class="bs-cta__inner">
+    <div class="bs-cta__orbit" aria-hidden="true">
+      <span class="bs-cta__orbit-ring bs-cta__orbit-ring--1"></span>
+      <span class="bs-cta__orbit-ring bs-cta__orbit-ring--2"></span>
+      <span class="bs-cta__orbit-ring bs-cta__orbit-ring--3"></span>
+      <span class="bs-cta__orbit-dot bs-cta__orbit-dot--1">🍕</span>
+      <span class="bs-cta__orbit-dot bs-cta__orbit-dot--2">🫑</span>
+      <span class="bs-cta__orbit-dot bs-cta__orbit-dot--3">🧀</span>
+    </div>
+
+    <div class="bs-cta__text">
+      <span class="bs-cta__eyebrow">¿Listo para ordenar?</span>
+      <h2 class="bs-cta__title">El sabor que<br>buscabas está aquí</h2>
+      <p class="bs-cta__body">
+        Pizzas artesanales, ingredientes frescos y recetas que cuentan historias.
+        Elige tu sede y empieza a explorar el menú.
+      </p>
+      @if (branches().length > 0) {
+        <button
+          class="bs-cta__btn"
+          type="button"
+          (click)="selectBranch(branches()[0])"
+        >
+          Ver el menú
+          <span class="bs-cta__btn-arrow" aria-hidden="true">→</span>
+        </button>
+      }
+    </div>
+  </div>
+</section>

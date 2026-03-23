@@ -1,14 +1,42 @@
 <main class="menu-page" role="main">
+
+  <!-- Sticky glassmorphism header -->
   <header class="menu-page__header">
-    @if (activeBranch(); as branch) {
-      <h1 class="menu-page__branch-name">{{ branch.display_name }}</h1>
-    }
+    <div class="menu-page__header-inner">
+      @if (activeBranch(); as branch) {
+        <div class="menu-page__brand">
+          <span class="menu-page__brand-label">Menú</span>
+          <h1 class="menu-page__branch-name">{{ branch.display_name }}</h1>
+        </div>
+      }
+      <div class="menu-page__header-actions">
+        <button
+          class="menu-page__cart-trigger"
+          type="button"
+          aria-label="Abrir carrito"
+          (click)="cartOpen.set(true)"
+        >
+          <span class="menu-page__cart-icon" aria-hidden="true">🛒</span>
+          @if (cartCount() > 0) {
+            <span class="menu-page__cart-badge">{{ cartCount() }}</span>
+          }
+        </button>
+      </div>
+    </div>
   </header>
 
+  <!-- Content -->
   <div class="menu-page__content">
     @if (sections().length === 0) {
       <div class="menu-page__loading" role="status" aria-live="polite">
-        <p class="menu-page__loading-text">Cargando menú…</p>
+        <div class="menu-page__skeleton-section">
+          <div class="skeleton menu-page__skeleton-title"></div>
+          <div class="menu-page__skeleton-grid">
+            @for (_ of [1,2,3,4]; track $index) {
+              <div class="skeleton menu-page__skeleton-card"></div>
+            }
+          </div>
+        </div>
       </div>
     } @else {
       <div class="menu-page__sections">
@@ -19,5 +47,5 @@
     }
   </div>
 
-  <app-cart-drawer />
+  <app-cart-drawer [externalOpen]="cartOpen()" (drawerClosed)="cartOpen.set(false)" />
 </main>

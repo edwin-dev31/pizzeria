@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BranchService } from '../../core/services/branch.service';
 import { MenuService } from '../../core/services/menu.service';
@@ -24,6 +24,14 @@ export class MenuPageComponent implements OnInit {
   readonly activeBranch = this.branchService.activeBranch;
   readonly sections = this.menuService.sections;
 
+  /** Controls cart drawer open state from the header button */
+  readonly cartOpen = signal(false);
+
+  /** Total item count for the badge */
+  readonly cartCount = computed(() =>
+    this.cartService.items().reduce((sum, i) => sum + i.quantity, 0)
+  );
+
   ngOnInit(): void {
     const branchSlug = this.route.snapshot.paramMap.get('branchSlug');
     if (!branchSlug) return;
@@ -34,15 +42,9 @@ export class MenuPageComponent implements OnInit {
     if (match) {
       this.branchService.setActiveBranch(match);
     } else {
-      // Branches may not be loaded yet — wait for them via effect-driven load
-      // BranchService.loadBranches() is called in constructor; once resolved,
-      // MenuService and ThemeService react via their effects on activeBranch.
-      // Re-attempt after load completes.
       this.branchService.loadBranches().then(() => {
         const loaded = this.branchService.branches().find((b) => b.slug === branchSlug);
-        if (loaded) {
-          this.branchService.setActiveBranch(loaded);
-        }
+        if (loaded) this.branchService.setActiveBranch(loaded);
       });
     }
   }

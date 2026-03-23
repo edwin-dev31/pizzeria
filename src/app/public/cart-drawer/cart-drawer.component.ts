@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, effect, inject, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CartService } from '../../core/services/cart.service';
 import { BranchService } from '../../core/services/branch.service';
@@ -17,14 +17,25 @@ export class CartDrawerComponent {
   private readonly branchService = inject(BranchService);
   private readonly notificationService = inject(NotificationService);
 
+  /** Allow parent to open the drawer programmatically */
+  readonly externalOpen = input<boolean>(false);
+
+  /** Emits when the drawer closes so parent can reset its signal */
+  readonly drawerClosed = output<void>();
+
   readonly isOpen = signal(false);
 
-  open(): void {
-    this.isOpen.set(true);
+  constructor() {
+    effect(() => {
+      if (this.externalOpen()) this.isOpen.set(true);
+    }, { allowSignalWrites: true });
   }
+
+  open(): void  { this.isOpen.set(true); }
 
   close(): void {
     this.isOpen.set(false);
+    this.drawerClosed.emit();
   }
 
   removeItem(productId: string): void {

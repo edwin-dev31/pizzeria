@@ -1,19 +1,3 @@
-<!-- Fixed bottom bar — always visible -->
-<div class="cart-bar" role="complementary" aria-label="Resumen del carrito">
-  <span class="cart-bar__count">
-    {{ cartService.items().length }} {{ cartService.items().length === 1 ? 'producto' : 'productos' }}
-  </span>
-  <button
-    class="cart-bar__btn"
-    type="button"
-    (click)="open()"
-    aria-haspopup="dialog"
-    [attr.aria-expanded]="isOpen()"
-  >
-    Ver carrito
-  </button>
-</div>
-
 <!-- Backdrop -->
 @if (isOpen()) {
   <div
@@ -33,14 +17,19 @@
 >
   <!-- Header -->
   <header class="cart-drawer__header">
-    <h2 class="cart-drawer__title">Carrito</h2>
+    <div class="cart-drawer__header-text">
+      <h2 class="cart-drawer__title">Tu pedido</h2>
+      <span class="cart-drawer__count">
+        {{ cartService.items().length }} {{ cartService.items().length === 1 ? 'producto' : 'productos' }}
+      </span>
+    </div>
     <button
       class="cart-drawer__close"
       type="button"
       (click)="close()"
       aria-label="Cerrar carrito"
     >
-      ✕
+      <span aria-hidden="true">✕</span>
     </button>
   </header>
 
@@ -50,9 +39,11 @@
       <li class="cart-drawer__item">
         <div class="cart-drawer__item-info">
           <span class="cart-drawer__item-name">{{ item.product.name }}</span>
-          <span class="cart-drawer__item-qty">x{{ item.quantity }}</span>
-          <span class="cart-drawer__item-price">
-            {{ item.product.price * item.quantity | currencyFormat: currencySymbol }}
+          <span class="cart-drawer__item-meta">
+            <span class="cart-drawer__item-qty">×{{ item.quantity }}</span>
+            <span class="cart-drawer__item-price">
+              {{ item.product.price * item.quantity | currencyFormat: currencySymbol }}
+            </span>
           </span>
         </div>
         <button
@@ -61,11 +52,15 @@
           (click)="removeItem(item.product.id)"
           [attr.aria-label]="'Eliminar ' + item.product.name"
         >
-          Eliminar
+          ✕
         </button>
       </li>
     } @empty {
-      <li class="cart-drawer__empty">El carrito está vacío</li>
+      <li class="cart-drawer__empty">
+        <span class="cart-drawer__empty-icon" aria-hidden="true">🛒</span>
+        <p>Tu carrito está vacío</p>
+        <span class="cart-drawer__empty-hint">Agrega productos del menú</span>
+      </li>
     }
   </ul>
 
@@ -84,7 +79,8 @@
       [disabled]="cartService.items().length === 0"
       aria-label="Enviar pedido por WhatsApp"
     >
-      Enviar pedido por WhatsApp
+      <span aria-hidden="true">💬</span>
+      Enviar por WhatsApp
     </button>
   </footer>
 </aside>

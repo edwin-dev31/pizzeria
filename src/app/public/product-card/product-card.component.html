@@ -1,23 +1,34 @@
-<article class="product-card">
-  <app-image-carousel [images]="product().images ?? []" />
+<article class="product-card" (click)="addToCart()" role="button" tabindex="0"
+  (keydown.enter)="addToCart()" (keydown.space)="addToCart()"
+  [attr.aria-label]="'Agregar ' + product().name + ' al carrito'">
 
+  <!-- Image -->
+  <div class="product-card__image-wrap">
+    <app-image-carousel [images]="product().images ?? []" />
+    <!-- Price badge -->
+    <span class="product-card__price-badge">
+      {{ product().price | currencyFormat: currencySymbol }}
+    </span>
+  </div>
+
+  <!-- Body -->
   <div class="product-card__body">
     <h3 class="product-card__name">{{ product().name }}</h3>
-
-    <p class="product-card__price">
-      {{ product().price | currencyFormat: currencySymbol }}
-    </p>
 
     @if (product().description) {
       <p class="product-card__description">{{ product().description }}</p>
     }
 
-    <button
-      class="product-card__btn"
-      type="button"
-      (click)="addToCart()"
-    >
-      Agregar al carrito
-    </button>
+    <div class="product-card__footer">
+      <button
+        class="product-card__btn"
+        type="button"
+        (click)="$event.stopPropagation(); addToCart()"
+        aria-label="Agregar al carrito"
+      >
+        <span aria-hidden="true">+</span>
+        Agregar
+      </button>
+    </div>
   </div>
 </article>

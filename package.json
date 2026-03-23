@@ -7,7 +7,7 @@
     "build": "ng build",
     "build:prod": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
-    "seed": "node --env-file=.env node_modules/.bin/ts-node --project scripts/tsconfig.scripts.json scripts/seed.ts",
+    "seed": "npx ts-node --project scripts/tsconfig.scripts.json scripts/seed.ts",
     "docker:build": "docker build -t pizzeria-platform .",
     "docker:up": "docker compose up --build",
     "docker:down": "docker compose down"

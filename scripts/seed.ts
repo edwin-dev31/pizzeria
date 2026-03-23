@@ -1,6 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as dotenv from 'dotenv';
+
+// Load .env from pizza-project root
+dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
 
 // --- Env validation ---
 const SUPABASE_URL = process.env['SUPABASE_URL'];
@@ -16,80 +20,121 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
   auth: { persistSession: false },
 });
 
+// --- Types ---
+interface BranchSeed {
+  slug: string;
+  display_name: string;
+  address?: string;
+  description?: string;
+  cover_image_url?: string;
+  whatsapp_number: string;
+  currency_symbol: string;
+  is_active: boolean;
+  display_order: number;
+}
+
+interface ProductSeed {
+  nombre: string;
+  descripcion?: string;
+  precio?: number;
+}
+
+interface ModelJson {
+  branches: BranchSeed[];
+  [key: string]: ProductSeed[] | BranchSeed[];
+}
+
 // --- Load model.json (two levels up from scripts/) ---
 const modelPath = path.resolve(__dirname, '..', '..', 'model.json');
-const model = JSON.parse(fs.readFileSync(modelPath, 'utf-8')) as Record<
-  string,
-  Array<{ nombre: string; descripcion?: string; precio?: number }>
->;
+const model = JSON.parse(fs.readFileSync(modelPath, 'utf-8')) as ModelJson;
 
 const SECTION_KEYS: Array<{ key: string; name: string }> = [
-  { key: 'pizzas',           name: 'Pizzas' },
-  { key: 'hamburguesas',     name: 'Hamburguesas' },
-  { key: 'perros',           name: 'Perros' },
-  { key: 'especiales',       name: 'Especiales' },
-  { key: 'desgranados',      name: 'Desgranados' },
-  { key: 'super_salchipapas',name: 'Super Salchipapas' },
-  { key: 'clasicos',         name: 'Clásicos' },
-  { key: 'adicionales',      name: 'Adicionales' },
+  { key: 'pizzas',            name: 'Pizzas' },
+  { key: 'hamburguesas',      name: 'Hamburguesas' },
+  { key: 'perros',            name: 'Perros' },
+  { key: 'especiales',        name: 'Especiales' },
+  { key: 'desgranados',       name: 'Desgranados' },
+  { key: 'super_salchipapas', name: 'Super Salchipapas' },
+  { key: 'clasicos',          name: 'Clasicos' },
+  { key: 'adicionales',       name: 'Adicionales' },
 ];
 
-const BRANCHES = [
-  { slug: 'norte', display_name: "Jiro's Norte", whatsapp_number: '0000000000', currency_symbol: '$', is_active: true, display_order: 0 },
-  { slug: 'sur',   display_name: "Jiro's Sur",   whatsapp_number: '0000000000', currency_symbol: '$', is_active: true, display_order: 1 },
-];
+const BRANCHES: BranchSeed[] = model.branches;
 
-async function main() {
-  try {
-    // 1. Upsert tenant
-    console.log('→ Seeding tenant...');
-    const { data: tenantData, error: tenantError } = await supabase
-      .from('tenants')
-      .upsert({ name: "Jiro's Pizzeria" }, { onConflict: 'name' })
-      .select('id')
-      .single();
-    if (tenantError) throw tenantError;
-    const tenantId: string = tenantData.id;
-    console.log(`  tenant id: ${tenantId}`);
+// --- Clear all data respecting FK order ---
+async function clearDatabase(): Promise<void> {
+  console.log('\n🗑  Limpiando base de datos...');
 
-    // 2. Upsert branches
-    console.log('→ Seeding branches...');
-    const branchRows = BRANCHES.map((b) => ({ ...b, tenant_id: tenantId }));
-    const { data: branchData, error: branchError } = await supabase
-      .from('branches')
-      .upsert(branchRows, { onConflict: 'slug' })
-      .select('id, slug');
-    if (branchError) throw branchError;
-    const branches = branchData as Array<{ id: string; slug: string }>;
-    branches.forEach((b) => console.log(`  branch: ${b.slug} → ${b.id}`));
+  const tables = [
+    'product_images',
+    'products',
+    'menu_sections',
+    'admin_branch_roles',
+    'theme_configs',
+    'branches',
+    'tenants',
+  ];
 
-    // 3. For each branch, upsert sections and products
-    for (const branch of branches) {
-      console.log(`\n→ Seeding sections for branch: ${branch.slug}`);
+  for (const table of tables) {
+    const { error } = await supabase.from(table).delete().neq('id', '00000000-0000-0000-0000-000000000000');
+    if (error) throw new Error(`Error limpiando ${table}: ${error.message}`);
+    console.log(`  ✓ ${table} limpiada`);
+  }
 
-      const sectionRows = SECTION_KEYS.map((s, idx) => ({
-        branch_id: branch.id,
-        name: s.name,
-        display_order: idx,
-      }));
+  console.log('  → Base de datos limpia.\n');
+}
 
-      const { data: sectionData, error: sectionError } = await supabase
-        .from('menu_sections')
-        .upsert(sectionRows, { onConflict: 'branch_id,name' })
-        .select('id, name');
-      if (sectionError) throw sectionError;
-      const sections = sectionData as Array<{ id: string; name: string }>;
+// --- Seed ---
+async function seed(): Promise<void> {
+  // 1. Tenant
+  console.log('→ Insertando tenant...');
+  const { data: tenantData, error: tenantError } = await supabase
+    .from('tenants')
+    .insert({ name: "Jiro's Pizzeria" })
+    .select('id')
+    .single();
+  if (tenantError) throw tenantError;
+  const tenantId: string = tenantData.id;
+  console.log(`  tenant id: ${tenantId}`);
 
-      for (const sectionMeta of SECTION_KEYS) {
-        const section = sections.find((s) => s.name === sectionMeta.name);
-        if (!section) continue;
+  // 2. Branches
+  console.log('→ Insertando branches...');
+  const { data: branchData, error: branchError } = await supabase
+    .from('branches')
+    .insert(BRANCHES.map((b) => ({ ...b, tenant_id: tenantId })))
+    .select('id, slug');
+  if (branchError) throw branchError;
+  const branches = branchData as Array<{ id: string; slug: string }>;
+  branches.forEach((b) => console.log(`  branch: ${b.slug} → ${b.id}`));
 
-        const products = model[sectionMeta.key] ?? [];
-        if (products.length === 0) continue;
+  // 3. Sections + products per branch
+  for (const branch of branches) {
+    console.log(`\n→ Secciones y productos para branch: ${branch.slug}`);
 
-        console.log(`  ↳ ${sectionMeta.name}: ${products.length} productos`);
+    const { data: sectionData, error: sectionError } = await supabase
+      .from('menu_sections')
+      .insert(
+        SECTION_KEYS.map((s, idx) => ({
+          branch_id: branch.id,
+          name: s.name,
+          display_order: idx,
+        }))
+      )
+      .select('id, name');
+    if (sectionError) throw sectionError;
+    const sections = sectionData as Array<{ id: string; name: string }>;
 
-        const productRows = products.map((p, idx) => ({
+    for (const sectionMeta of SECTION_KEYS) {
+      const section = sections.find((s) => s.name === sectionMeta.name);
+      if (!section) continue;
+
+      const items = (model[sectionMeta.key] ?? []) as ProductSeed[];
+      if (items.length === 0) continue;
+
+      console.log(`  ↳ ${sectionMeta.name}: ${items.length} productos`);
+
+      const { error: productError } = await supabase.from('products').insert(
+        items.map((p, idx) => ({
           section_id: section.id,
           branch_id: branch.id,
           name: p.nombre,
@@ -97,15 +142,17 @@ async function main() {
           price: p.precio ?? 0,
           is_available: true,
           display_order: idx,
-        }));
-
-        const { error: productError } = await supabase
-          .from('products')
-          .upsert(productRows, { onConflict: 'section_id,name' });
-        if (productError) throw productError;
-      }
+        }))
+      );
+      if (productError) throw productError;
     }
+  }
+}
 
+async function main() {
+  try {
+    await clearDatabase();
+    await seed();
     console.log('\n✓ Seed completo.');
   } catch (err) {
     console.error('\n✗ Seed falló:', err);
