@@ -10,7 +10,11 @@
   <div class="product-card__image-wrap">
     <app-image-carousel [images]="product().images ?? []" />
     <span class="product-card__price-badge">
-      {{ product().price | currencyFormat: currencySymbol }}
+      @if (hasVariants()) {
+        {{ displayPrice() | currencyFormat: currencySymbol }}
+      } @else {
+        {{ product().price | currencyFormat: currencySymbol }}
+      }
     </span>
     @if (cartQuantity() > 0) {
       <span class="product-card__qty-badge" [attr.aria-label]="cartQuantity() + ' en carrito'">

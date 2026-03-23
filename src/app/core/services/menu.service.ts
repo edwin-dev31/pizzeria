@@ -32,7 +32,7 @@ export class MenuService {
   async loadMenu(branchId: string): Promise<void> {
     const { data, error } = await this.supabase
       .from('menu_sections')
-      .select('*, products(*, images:product_images(*))')
+      .select('*, products(*, images:product_images(*), variants:product_variants(*))')
       .eq('branch_id', branchId)
       .order('display_order', { ascending: true });
 

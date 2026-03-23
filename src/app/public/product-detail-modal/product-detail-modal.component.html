@@ -19,19 +19,16 @@
       } @else {
         <div class="pdm-hero__placeholder" aria-hidden="true">🍕</div>
       }
-      <!-- gradient so title reads over image -->
       <div class="pdm-hero__scrim" aria-hidden="true"></div>
 
-      <!-- close -->
       <button class="pdm-close" type="button" aria-label="Cerrar" (click)="close()">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
           <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
         </svg>
       </button>
 
-      <!-- price chip over image -->
       <div class="pdm-hero__price-chip">
-        {{ product().price | currencyFormat: currencySymbol }}
+        {{ displayPrice() | currencyFormat: currencySymbol }}
       </div>
     </div>
 
@@ -43,7 +40,28 @@
         <p class="pdm-body__desc">{{ product().description }}</p>
       }
 
-      <!-- ── Actions ── -->
+      @if (hasVariants()) {
+        <div class="pdm-sizes" role="group" aria-label="Selecciona el tamaño">
+          <p class="pdm-sizes__label">Tamaño</p>
+          <div class="pdm-sizes__grid">
+            @for (variant of sortedVariants(); track variant.id) {
+              <button
+                class="pdm-size-btn"
+                [class.pdm-size-btn--active]="activeVariant()?.id === variant.id"
+                type="button"
+                (click)="selectVariant(variant)"
+              >
+                <span class="pdm-size-btn__name">{{ variant.name }}</span>
+                @if (variant.label) {
+                  <span class="pdm-size-btn__label">{{ variant.label }}</span>
+                }
+                <span class="pdm-size-btn__price">{{ variant.price | currencyFormat: currencySymbol }}</span>
+              </button>
+            }
+          </div>
+        </div>
+      }
+
       <div class="pdm-actions">
         @if (quantity() > 0) {
           <div class="pdm-qty" role="group" aria-label="Cantidad">

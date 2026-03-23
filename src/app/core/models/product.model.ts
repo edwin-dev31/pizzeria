@@ -1,4 +1,5 @@
 import { ProductImage } from './product-image.model';
+import { ProductVariant } from './product-variant.model';
 
 export interface Product {
   id: string;
@@ -10,4 +11,5 @@ export interface Product {
   is_available: boolean;
   display_order: number;
   images?: ProductImage[];
+  variants?: ProductVariant[];
 }

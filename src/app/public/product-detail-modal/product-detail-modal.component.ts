@@ -1,5 +1,6 @@
-import { Component, computed, inject, input, output } from '@angular/core';
+import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { Product } from '../../core/models/product.model';
+import { ProductVariant } from '../../core/models/product-variant.model';
 import { CartService } from '../../core/services/cart.service';
 import { BranchService } from '../../core/services/branch.service';
 import { NotificationService } from '../../core/services/notification.service';
@@ -21,13 +22,34 @@ export class ProductDetailModalComponent {
   private readonly branchService = inject(BranchService);
   private readonly notificationService = inject(NotificationService);
 
-  readonly quantity = computed(() => {
-    const item = this.cartService.items().find(i => i.product.id === this.product().id);
-    return item?.quantity ?? 0;
+
+  readonly selectedVariant = signal<ProductVariant | null>(null);
+
+  readonly hasVariants = computed(() => (this.product().variants?.length ?? 0) > 0);
+
+  readonly sortedVariants = computed<ProductVariant[]>(() =>
+    [...(this.product().variants ?? [])].sort((a, b) => a.price - b.price)
+  );
+
+  readonly activeVariant = computed<ProductVariant | null>(() => {
+    if (!this.hasVariants()) return null;
+    return this.selectedVariant() ?? (this.sortedVariants()[0] ?? null);
   });
+
+  readonly displayPrice = computed(() =>
+    this.activeVariant() ? this.activeVariant()!.price : this.product().price
+  );
+
+  readonly quantity = computed(() =>
+    this.cartService.getQuantity(this.product().id, this.activeVariant()?.id ?? null)
+  );
 
   get currencySymbol(): string {
     return this.branchService.activeBranch()?.currency_symbol ?? '$';
+  }
+
+  selectVariant(variant: ProductVariant): void {
+    this.selectedVariant.set(variant);
   }
 
   close(): void {
@@ -41,11 +63,12 @@ export class ProductDetailModalComponent {
   }
 
   addToCart(): void {
-    this.cartService.addItem(this.product());
-    this.notificationService.show(`${this.product().name} agregado al carrito`, 'success');
+    this.cartService.addItem(this.product(), this.activeVariant());
+    const variantLabel = this.activeVariant() ? ` (${this.activeVariant()!.name})` : '';
+    this.notificationService.show(`${this.product().name}${variantLabel} agregado al carrito`, 'success');
   }
 
   removeFromCart(): void {
-    this.cartService.removeItem(this.product().id);
+    this.cartService.removeItem(this.product().id, this.activeVariant()?.id ?? null);
   }
 }

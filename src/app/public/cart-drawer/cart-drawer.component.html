@@ -20,7 +20,7 @@
     <div class="cart-drawer__header-text">
       <h2 class="cart-drawer__title">Tu pedido</h2>
       <span class="cart-drawer__count">
-        {{ cartService.items().length }} {{ cartService.items().length === 1 ? 'producto' : 'productos' }}
+        {{ cartCount() }} {{ cartCount() === 1 ? 'producto' : 'productos' }}
       </span>
     </div>
     <button
@@ -35,27 +35,46 @@
 
   <!-- Items list -->
   <ul class="cart-drawer__list" aria-label="Productos en el carrito">
-    @for (item of cartService.items(); track item.product.id) {
+    @for (item of cartService.items(); track $index) {
       <li class="cart-drawer__item">
+
+        <!-- Info column -->
         <div class="cart-drawer__item-info">
           <span class="cart-drawer__item-name">{{ item.product.name }}</span>
-          <span class="cart-drawer__item-meta">
-            <span class="cart-drawer__item-qty">×{{ item.quantity }}</span>
-            <span class="cart-drawer__item-price">
-              {{ item.product.price * item.quantity | currencyFormat: currencySymbol }}
+          @if (item.variant) {
+            <span class="cart-drawer__item-variant">
+              {{ item.variant.name }}: {{ item.variant.price | currencyFormat: currencySymbol }}
             </span>
+          }
+          <span class="cart-drawer__item-subtotal">
+            {{ (item.variant ? item.variant.price : item.product.price) * item.quantity | currencyFormat: currencySymbol }}
           </span>
         </div>
-        <button
-          class="cart-drawer__item-remove"
-          type="button"
-          (click)="removeItem(item.product.id)"
-          [attr.aria-label]="'Eliminar ' + item.product.name"
-        >
-          ✕
-        </button>
+
+        <!-- Quantity stepper -->
+        <div class="cart-drawer__stepper">
+          <button
+            class="cart-drawer__stepper-btn"
+            type="button"
+            (click)="removeItem(item.product.id, item.variant?.id ?? null)"
+            [attr.aria-label]="item.quantity === 1 ? 'Eliminar ' + item.product.name : 'Reducir cantidad'"
+          >
+            {{ item.quantity === 1 ? '🗑' : '−' }}
+          </button>
+          <span class="cart-drawer__stepper-qty" aria-live="polite">{{ item.quantity }}</span>
+          <button
+            class="cart-drawer__stepper-btn"
+            type="button"
+            (click)="addItem(item.product, item.variant)"
+            [attr.aria-label]="'Aumentar cantidad de ' + item.product.name"
+          >
+            +
+          </button>
+        </div>
+
       </li>
-    } @empty {
+    }
+    @if (cartService.items().length === 0) {
       <li class="cart-drawer__empty">
         <span class="cart-drawer__empty-icon" aria-hidden="true">🛒</span>
         <p>Tu carrito está vacío</p>

@@ -1,4 +1,4 @@
-import { Component, effect, inject, input, output, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CartService } from '../../core/services/cart.service';
 import { BranchService } from '../../core/services/branch.service';
@@ -17,13 +17,14 @@ export class CartDrawerComponent {
   private readonly branchService = inject(BranchService);
   private readonly notificationService = inject(NotificationService);
 
-  /** Allow parent to open the drawer programmatically */
   readonly externalOpen = input<boolean>(false);
-
-  /** Emits when the drawer closes so parent can reset its signal */
   readonly drawerClosed = output<void>();
 
   readonly isOpen = signal(false);
+
+  readonly cartCount = computed(() =>
+    this.cartService.items().reduce((sum, i) => sum + i.quantity, 0)
+  );
 
   constructor() {
     effect(() => {
@@ -38,9 +39,12 @@ export class CartDrawerComponent {
     this.drawerClosed.emit();
   }
 
-  removeItem(productId: string): void {
-    this.cartService.removeItem(productId);
-    this.notificationService.show('Producto eliminado del carrito', 'info');
+  removeItem(productId: string, variantId: string | null = null): void {
+    this.cartService.removeItem(productId, variantId);
+  }
+
+  addItem(product: any, variant: any = null): void {
+    this.cartService.addItem(product, variant);
   }
 
   submitOrder(): void {
@@ -54,6 +58,6 @@ export class CartDrawerComponent {
   }
 
   get currencySymbol(): string {
-    return this.branchService.activeBranch()?.currency_symbol ?? '$';
+    return this.branchService.activeBranch()?.currency_symbol ?? 'Q';
   }
 }

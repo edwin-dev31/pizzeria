@@ -27,15 +27,16 @@
   left: 0;
   right: 0;
   z-index: var(--z-panel);
-  max-height: 80vh;
+  height: 80vh;
   display: flex;
   flex-direction: column;
-  background-color: var(--surface-container-lowest, #110d0b);
-  color: var(--on-surface, #eae0dd);
+  background-color: var(--surface-container-lowest, #090604);
+  color: var(--on-surface, #f5ede6);
   border-radius: var(--radius-xl) var(--radius-xl) 0 0;
   transform: translateY(100%);
   transition: transform var(--transition-spring);
   box-shadow: var(--shadow-float);
+  overflow: hidden;
 
   &--open { transform: translateY(0); }
 
@@ -106,13 +107,16 @@
     flex: 1;
     overflow-y: auto;
     padding: 0 var(--space-4);
-    scrollbar-width: thin;
-    scrollbar-color: var(--surface-container-high) transparent;
+    scrollbar-width: none;
+    min-height: 0;
+
+    &::-webkit-scrollbar { display: none; }
   }
 
   &__item {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: var(--space-3);
     padding: var(--space-3) 0;
     border-bottom: 1px solid rgba(87, 66, 58, 0.2);
@@ -125,7 +129,7 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.2rem;
   }
 
   &__item-name {
@@ -134,45 +138,59 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    color: var(--on-surface, #eae0dd);
+    color: var(--on-surface, #f5ede6);
   }
 
-  &__item-meta {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-  }
-
-  &__item-qty {
-    font-size: 0.8125rem;
-    color: var(--on-surface-variant, #dfc0b6);
-  }
-
-  &__item-price {
-    font-size: 0.875rem;
+  &__item-variant {
+    font-size: 0.75rem;
     font-weight: 600;
+    color: var(--color-primary, #ff6a00);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  &__item-subtotal {
+    font-size: 0.875rem;
+    font-weight: 700;
     color: var(--color-secondary, #ffb954);
   }
 
-  &__item-remove {
-    width: 1.75rem;
-    height: 1.75rem;
+  // ── Quantity stepper ──────────────────────────────────────────────────────
+  &__stepper {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background-color: var(--surface-container, #231f1d);
+    border-radius: var(--radius-full);
+    flex-shrink: 0;
+  }
+
+  &__stepper-btn {
+    width: 2rem;
+    height: 2rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: transparent;
-    color: var(--color-outline, #a68b81);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--on-surface-variant, #dfc0b6);
     border-radius: var(--radius-full);
-    font-size: 0.75rem;
-    flex-shrink: 0;
     transition: background-color var(--transition-smooth), color var(--transition-smooth);
 
     &:hover {
-      background-color: rgba(220, 60, 0, 0.22);
-      color: var(--color-primary, #ffb59a);
+      background-color: var(--surface-container-high, #2e2927);
+      color: var(--on-surface, #eae0dd);
     }
 
-    &:focus-visible { outline: 2px solid var(--color-primary, #ffb59a); }
+    &:focus-visible { outline: 2px solid var(--color-primary, #ff6a00); }
+  }
+
+  &__stepper-qty {
+    min-width: 1.5rem;
+    text-align: center;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--on-surface, #f5ede6);
   }
 
   // ── Empty state ───────────────────────────────────────────────────────────
@@ -205,11 +223,7 @@
   &__footer {
     padding: var(--space-3) var(--space-4) var(--space-6);
     flex-shrink: 0;
-    background: linear-gradient(
-      to bottom,
-      transparent,
-      var(--surface-container-lowest, #110d0b) 1.5rem
-    );
+    border-top: 1px solid rgba(74, 46, 26, 0.2);
   }
 
   &__total {
@@ -274,6 +288,7 @@
     bottom: 0;
     top: 0;
     width: 26rem;
+    height: 100vh;
     max-height: 100vh;
     border-radius: var(--radius-xl) 0 0 var(--radius-xl);
     transform: translateX(100%);

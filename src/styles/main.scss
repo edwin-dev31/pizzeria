@@ -80,7 +80,11 @@ ul, ol { list-style: none; }
   border-radius: var(--radius-md);
 }
 
-// ── Utility: fade-in ──────────────────────────────────────────────────────────
+* {
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(1rem); }
   to   { opacity: 1; transform: translateY(0); }

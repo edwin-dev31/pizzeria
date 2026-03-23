@@ -19,9 +19,22 @@ export class ProductCardComponent {
   private readonly cartService = inject(CartService);
   private readonly branchService = inject(BranchService);
 
-  readonly cartQuantity = computed(() => {
-    const item = this.cartService.items().find(i => i.product.id === this.product().id);
-    return item?.quantity ?? 0;
+  readonly cartQuantity = computed(() =>
+    this.cartService.items()
+      .filter(i => i.product.id === this.product().id)
+      .reduce((sum, i) => sum + i.quantity, 0)
+  );
+
+  readonly hasVariants = computed(() => (this.product().variants?.length ?? 0) > 0);
+
+  /** Price to show on the card: first variant price (personal) or base price */
+  readonly displayPrice = computed(() => {
+    const variants = this.product().variants;
+    if (variants && variants.length > 0) {
+      const sorted = [...variants].sort((a, b) => a.display_order - b.display_order);
+      return sorted[0].price;
+    }
+    return this.product().price;
   });
 
   get currencySymbol(): string {
