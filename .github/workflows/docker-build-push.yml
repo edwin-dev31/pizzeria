@@ -24,7 +24,6 @@ jobs:
           node-version: 20
 
       - name: Generate environment files
-        working-directory: pizza-project
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
@@ -49,7 +48,7 @@ jobs:
       - name: Build and push multi-arch image
         uses: docker/build-push-action@v6
         with:
-          context: ./pizza-project
+          context: .
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/pizzeria-platform:latest
