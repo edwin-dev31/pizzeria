@@ -1,5 +1,6 @@
-import { AfterViewInit, Component, OnInit, computed, inject, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { AfterViewInit, Component, HostListener, OnInit, computed, inject, signal } from '@angular/core';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { LucideAngularModule, MapPin, ShoppingCart, ChevronDown, ChevronRight } from 'lucide-angular';
 import { BranchService } from '../../core/services/branch.service';
 import { MenuService } from '../../core/services/menu.service';
 import { ThemeService } from '../../core/services/theme.service';
@@ -9,17 +10,24 @@ import { CartDrawerComponent } from '../cart-drawer/cart-drawer.component';
 import { ProductDetailModalComponent } from '../product-detail-modal/product-detail-modal.component';
 import { MenuSection } from '../../core/models/menu-section.model';
 import { Product } from '../../core/models/product.model';
+import { Branch } from '../../core/models/branch.model';
 
 @Component({
   selector: 'app-menu-page',
   standalone: true,
-  imports: [MenuSectionComponent, CartDrawerComponent, ProductDetailModalComponent],
+  imports: [MenuSectionComponent, CartDrawerComponent, ProductDetailModalComponent, RouterLink, LucideAngularModule],
   templateUrl: './menu-page.component.html',
   styleUrls: ['./menu-page.component.scss'],
 })
 export class MenuPageComponent implements OnInit, AfterViewInit {
+  readonly MapPin = MapPin;
+  readonly ShoppingCart = ShoppingCart;
+  readonly ChevronDown = ChevronDown;
+  readonly ChevronRight = ChevronRight;
+
   private readonly route = inject(ActivatedRoute);
-  private readonly branchService = inject(BranchService);
+  private readonly router = inject(Router);
+  readonly branchService = inject(BranchService);
   readonly menuService = inject(MenuService);
   readonly themeService = inject(ThemeService);
   readonly cartService = inject(CartService);
@@ -28,6 +36,7 @@ export class MenuPageComponent implements OnInit, AfterViewInit {
   readonly sections = this.menuService.sections;
 
   readonly cartOpen = signal(false);
+  readonly branchMenuOpen = signal(false);
   readonly activeSectionId = signal<string | null>(null);
   readonly selectedProduct = signal<Product | null>(null);
 
@@ -55,20 +64,16 @@ export class MenuPageComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // Observe sections for active nav pill highlight
     this.observer = new IntersectionObserver(
       (entries) => {
         const visible = entries.filter(e => e.isIntersecting);
         if (visible.length > 0) {
-          // Pick the one closest to top
           const top = visible.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
           this.activeSectionId.set(top.target.id.replace('section-', ''));
         }
       },
       { rootMargin: '-20% 0px -60% 0px', threshold: 0 }
     );
-
-    // Observe after sections load (slight delay)
     setTimeout(() => this.observeSections(), 500);
   }
 
@@ -89,6 +94,24 @@ export class MenuPageComponent implements OnInit, AfterViewInit {
       const y = el.getBoundingClientRect().top + window.scrollY - 112;
       window.scrollTo({ top: y, behavior: 'smooth' });
     }
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.menu-page__branch-dropdown')) {
+      this.branchMenuOpen.set(false);
+    }
+  }
+
+  toggleBranchMenu(): void {
+    this.branchMenuOpen.update(v => !v);
+  }
+
+  switchBranch(branch: Branch): void {
+    this.branchService.setActiveBranch(branch);
+    this.branchMenuOpen.set(false);
+    this.router.navigate(['/', branch.slug, 'menu']);
   }
 
   openProduct(product: Product): void {

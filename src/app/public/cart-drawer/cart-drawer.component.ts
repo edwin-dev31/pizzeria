@@ -1,5 +1,6 @@
 import { Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { LucideAngularModule, MessageCircle } from 'lucide-angular';
 import { CartService } from '../../core/services/cart.service';
 import { BranchService } from '../../core/services/branch.service';
 import { NotificationService } from '../../core/services/notification.service';
@@ -8,11 +9,12 @@ import { CurrencyFormatPipe } from '../../shared/pipes/currency-format.pipe';
 @Component({
   selector: 'app-cart-drawer',
   standalone: true,
-  imports: [CommonModule, CurrencyFormatPipe],
+  imports: [CommonModule, CurrencyFormatPipe, LucideAngularModule],
   templateUrl: './cart-drawer.component.html',
   styleUrls: ['./cart-drawer.component.scss'],
 })
 export class CartDrawerComponent {
+  readonly MessageCircle = MessageCircle;
   readonly cartService = inject(CartService);
   private readonly branchService = inject(BranchService);
   private readonly notificationService = inject(NotificationService);

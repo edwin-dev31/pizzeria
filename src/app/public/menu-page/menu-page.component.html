@@ -3,20 +3,59 @@
   <!-- ── Sticky header ──────────────────────────────────────────────────── -->
   <header class="menu-page__header">
     <div class="menu-page__header-inner">
-      @if (activeBranch(); as branch) {
-        <div class="menu-page__brand">
-          <span class="menu-page__brand-label">Menú</span>
-          <h1 class="menu-page__branch-name">{{ branch.display_name }}</h1>
-        </div>
-      }
+      <!-- Logo -->
+      <a class="menu-page__logo" routerLink="/branch-select" aria-label="Ir al inicio">
+        Jiro's Pizza
+      </a>
+
       <div class="menu-page__header-actions">
+        @if (activeBranch(); as branch) {
+          <div class="menu-page__branch-dropdown">
+            <button
+              class="menu-page__branch-switch"
+              type="button"
+              [attr.aria-expanded]="branchMenuOpen()"
+              aria-haspopup="listbox"
+              aria-label="Cambiar sede"
+              (click)="toggleBranchMenu()"
+            >
+              <lucide-icon [img]="MapPin" [size]="14" aria-hidden="true" />
+              <span class="menu-page__branch-switch-name">{{ branch.display_name }}</span>
+              <lucide-icon
+                [img]="ChevronDown"
+                [size]="14"
+                [class.menu-page__branch-switch-arrow--open]="branchMenuOpen()"
+                class="menu-page__branch-switch-arrow"
+                aria-hidden="true"
+              />
+            </button>
+
+            @if (branchMenuOpen()) {
+              <ul class="menu-page__branch-menu" role="listbox" aria-label="Seleccionar sede">
+                @for (b of branchService.branches(); track b.id) {
+                  <li
+                    class="menu-page__branch-option"
+                    [class.menu-page__branch-option--active]="b.id === branch.id"
+                    role="option"
+                    [attr.aria-selected]="b.id === branch.id"
+                    (click)="switchBranch(b)"
+                  >
+                    <span class="menu-page__branch-option-dot" aria-hidden="true"></span>
+                    {{ b.display_name }}
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+        }
+
         <button
           class="menu-page__cart-trigger"
           type="button"
           aria-label="Abrir carrito"
           (click)="cartOpen.set(true)"
         >
-          <span class="menu-page__cart-icon" aria-hidden="true">🛒</span>
+          <lucide-icon [img]="ShoppingCart" [size]="20" aria-hidden="true" />
           @if (cartCount() > 0) {
             <span class="menu-page__cart-badge">{{ cartCount() }}</span>
           }
@@ -38,6 +77,9 @@
               {{ section.name }}
             </button>
           }
+        </div>
+        <div class="menu-page__section-nav-hint" aria-hidden="true">
+          <lucide-icon [img]="ChevronRight" [size]="16" />
         </div>
       </nav>
     }

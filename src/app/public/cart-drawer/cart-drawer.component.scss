@@ -265,6 +265,8 @@
     border-radius: var(--radius-full);
     transition: transform var(--transition-smooth), box-shadow var(--transition-smooth), filter var(--transition-smooth);
 
+    lucide-icon { color: inherit; }
+
     &:hover:not(:disabled) {
       transform: scale(1.02);
       box-shadow: var(--shadow-ambient);

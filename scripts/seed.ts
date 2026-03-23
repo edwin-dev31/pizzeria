@@ -20,7 +20,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
 
 enum VariantSize {
   Personal = 'PERSONAL',
-  Pequena  = 'PEQUENA',
+  Pequena  = 'PEQUEÑA',
   Mediana  = 'MEDIANA',
   Gigante  = 'GIGANTE',
 }

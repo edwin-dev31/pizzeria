@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, output, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, computed, inject, input, output, signal } from '@angular/core';
 import { Product } from '../../core/models/product.model';
 import { ProductVariant } from '../../core/models/product-variant.model';
 import { CartService } from '../../core/services/cart.service';
@@ -14,7 +14,7 @@ import { ImageCarouselComponent } from '../../shared/components/image-carousel/i
   templateUrl: './product-detail-modal.component.html',
   styleUrl: './product-detail-modal.component.scss',
 })
-export class ProductDetailModalComponent {
+export class ProductDetailModalComponent implements OnInit, OnDestroy {
   readonly product = input.required<Product>();
   readonly closed = output<void>();
 
@@ -24,6 +24,14 @@ export class ProductDetailModalComponent {
 
 
   readonly selectedVariant = signal<ProductVariant | null>(null);
+
+  ngOnInit(): void {
+    document.body.style.overflow = 'hidden';
+  }
+
+  ngOnDestroy(): void {
+    document.body.style.overflow = '';
+  }
 
   readonly hasVariants = computed(() => (this.product().variants?.length ?? 0) > 0);
 
@@ -53,6 +61,7 @@ export class ProductDetailModalComponent {
   }
 
   close(): void {
+    document.body.style.overflow = '';
     this.closed.emit();
   }
 

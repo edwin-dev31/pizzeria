@@ -98,7 +98,9 @@
       [disabled]="cartService.items().length === 0"
       aria-label="Enviar pedido por WhatsApp"
     >
-      <span aria-hidden="true">💬</span>
+      <span aria-hidden="true" class="menu-page__cart-submit-icon">
+        <lucide-icon [img]="MessageCircle" [size]="18" aria-hidden="true" />
+      </span>
       Enviar por WhatsApp
     </button>
   </footer>

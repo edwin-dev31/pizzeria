@@ -1,14 +1,17 @@
-import { Injectable, Signal, computed, signal } from '@angular/core';
+import { Injectable, Signal, computed, effect, inject, signal } from '@angular/core';
 import { CartItem } from '../models/cart-item.model';
 import { Product } from '../models/product.model';
 import { ProductVariant } from '../models/product-variant.model';
 import { Branch } from '../models/branch.model';
+import { BranchService } from './branch.service';
 
-const STORAGE_KEY = 'pizzeria_cart';
+const STORAGE_PREFIX = 'pizzeria_cart_';
 
 @Injectable({ providedIn: 'root' })
 export class CartService {
-  private readonly _items = signal<CartItem[]>(this._rehydrate());
+  private readonly branchService = inject(BranchService);
+
+  private readonly _items = signal<CartItem[]>([]);
 
   readonly items: Signal<CartItem[]> = this._items.asReadonly();
 
@@ -18,6 +21,19 @@ export class CartService {
       return sum + price * item.quantity;
     }, 0)
   );
+
+  constructor() {
+    effect(() => {
+      const branch = this.branchService.activeBranch();
+      if (branch) {
+        this._items.set(this._rehydrate(branch.id));
+      }
+    }, { allowSignalWrites: true });
+  }
+
+  private storageKey(branchId: string): string {
+    return `${STORAGE_PREFIX}${branchId}`;
+  }
 
   private itemKey(productId: string, variantId: string | null): string {
     return variantId ? `${productId}__${variantId}` : productId;
@@ -59,33 +75,32 @@ export class CartService {
   }
 
   clear(): void {
+    const branch = this.branchService.activeBranch();
     this._items.set([]);
-    sessionStorage.removeItem(STORAGE_KEY);
+    if (branch) localStorage.removeItem(this.storageKey(branch.id));
   }
 
   buildWhatsAppUrl(branch: Branch): string {
-    const currency = branch.currency_symbol;
     const lines = this._items()
       .map(i => {
-        const price = i.variant ? i.variant.price : i.product.price;
         const variantLabel = i.variant ? ` (${i.variant.name})` : '';
-        return `- ${i.quantity}x ${i.product.name}${variantLabel} — ${currency}${price}`;
+        return `- ${i.quantity}x ${i.product.name}${variantLabel}`;
       })
       .join('\n');
     const message =
-      `Hola! Quiero hacer un pedido en ${branch.display_name}:\n\n` +
-      `${lines}\n\n` +
-      `*Total: ${currency}${this.total()}*`;
+      `Hola! Quiero hacer un pedido en ${branch.display_name}:\n\n${lines}`;
     return `https://wa.me/${branch.whatsapp_number}?text=${encodeURIComponent(message)}`;
   }
 
   private _persist(): void {
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(this._items()));
+    const branch = this.branchService.activeBranch();
+    if (!branch) return;
+    localStorage.setItem(this.storageKey(branch.id), JSON.stringify(this._items()));
   }
 
-  private _rehydrate(): CartItem[] {
+  private _rehydrate(branchId: string): CartItem[] {
     try {
-      const raw = sessionStorage.getItem(STORAGE_KEY);
+      const raw = localStorage.getItem(this.storageKey(branchId));
       return raw ? (JSON.parse(raw) as CartItem[]) : [];
     } catch {
       return [];
